@@ -301,14 +301,14 @@ identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6,
 identifiedby <- identifiedby_2
 specialists <- c(specialists, replace.by)
 
-#AP Savassi-Coutinho
-replace.by <- "AP Savassi-Coutinho"
+#GP Lewis
+replace.by <- "GP Lewis"
 identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
                                 check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
                                                           str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
                                 replace.by = replace.by,
                                 not.replace = c(),
-                                replace = c())
+                                replace = c("g. P. Lewis"  ))
 
 identifiedby <- identifiedby_2
 specialists <- c(specialists, replace.by)
