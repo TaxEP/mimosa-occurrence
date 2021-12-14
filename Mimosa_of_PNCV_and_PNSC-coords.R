@@ -7,9 +7,9 @@ library(flora)
 library(rgdal) 
 library(raster)
 
-library(RecordLinkage) #this package was missing from the script
+library(RecordLinkage) # this package was missing from the script
 
-#Loading functions
+# Loading functions
 source('functions.R') 
 
 #====================================================================================================#
@@ -22,13 +22,13 @@ source('functions.R')
 # GBIF #
 #======#
 
-#Reading GBIF data
+# Reading GBIF data
 
 mimosa_gbif <- fread(file = "dataset/occurrence.txt",
                      na.strings = c("", NA), stringsAsFactors = F, encoding = "UTF-8")
 
 
-#Reducing data dimensionality by selecting only necessary columns
+# Reducing data dimensionality by selecting only necessary columns
 mimosa_gbif <- mimosa_gbif %>% dplyr::select(institutionCode,
                                              collectionCode,
                                              catalogNumber,
@@ -46,7 +46,7 @@ mimosa_gbif <- mimosa_gbif %>% dplyr::select(institutionCode,
                                              decimalLongitude,
                                              decimalLatitude)
 
-#Renaming attributes in order to match speciesLink column names
+# Renaming attributes in order to match speciesLink column names
 mimosa_gbif <- mimosa_gbif %>% rename("species" = specificEpithet,
                                       "institutioncode" = institutionCode,
                                       "collectioncode" = collectionCode,
@@ -60,20 +60,20 @@ mimosa_gbif <- mimosa_gbif %>% rename("species" = specificEpithet,
                                       "latitude" = decimalLatitude,
                                       "subspecies" = infraspecificEpithet)
 
-#Giving an unique ID number for each record
+# Giving an unique ID number for each record
 mimosa_gbif <- cbind(id = 1:nrow(mimosa_gbif), mimosa_gbif)
 
 #=============#
 # speciesLink #
 #=============#
 
-#Reading spLink (Warning message because of double quotes. Not a problem in this context)
+# Reading spLink (Warning message because of double quotes. Not a problem in this context)
 mimosa_spLink <- fread(file = "dataset/speciesLink-20211213184635-0003085.txt", 
                        na.strings = c("", NA), stringsAsFactors = F, encoding = "UTF-8")
 
 
 
-#Selecting important attributes
+# Selecting important attributes
 mimosa_spLink <- mimosa_spLink %>% dplyr::select(institutioncode,
                                                  collectioncode,
                                                  catalognumber,
@@ -90,12 +90,12 @@ mimosa_spLink <- mimosa_spLink %>% dplyr::select(institutioncode,
                                                  longitude,
                                                  latitude)
 
-#Coercing coords into numeric values (NA's are introduced by coercion in observations
-#with coordinate values as 'Bloqueada')
+# Coercing coords into numeric values (NA's are introduced by coercion in observations
+# with coordinate values as 'Bloqueada')
 mimosa_spLink$longitude <- as.numeric(as.character(mimosa_spLink$longitude))
 mimosa_spLink$latitude <- as.numeric(as.character(mimosa_spLink$latitude))
 
-#Giving an unique ID number for each record
+# Giving an unique ID number for each record
 mimosa_spLink <- cbind(id = (nrow(mimosa_gbif) + 1):(nrow(mimosa_gbif) + nrow(mimosa_spLink)), mimosa_spLink)
 
 #======================================================================================#
@@ -104,8 +104,8 @@ mimosa_spLink <- cbind(id = (nrow(mimosa_gbif) + 1):(nrow(mimosa_gbif) + nrow(mi
 # CONCATENATING DATASETS #
 #========================#
 
-#Merging gbif and splink (116,987), and adding a column to define the original dataset
-#for each observation
+# Merging gbif and splink (165,758), and adding a column to define the original dataset
+# for each observation
 merge.with.source <- function(x, y, name.x = "X", name.y = "Y") {
   x.df <- cbind(x, datsrc.x = name.x)
   y.df <- cbind(y, datsrc.y = name.y)
@@ -125,7 +125,7 @@ mimosa <- merge.with.source(x = mimosa_gbif,
                             name.x = "gbif",
                             name.y = "splink")
 
-# rm(merge.with.source, mimosa_gbif, mimosa_spLink) ???
+rm(merge.with.source, mimosa_gbif, mimosa_spLink) 
 
 #======================================================================================#
 
@@ -133,9 +133,9 @@ mimosa <- merge.with.source(x = mimosa_gbif,
 # PRE-REFINEMENT #
 #================#
 
-#Removing duplicated registers given the institution code, the collection code and
-#the catalog number (observations with NA for any of those attributes
-#were not considered) (89,918)
+# Removing duplicated registers given the institution code, the collection code and
+# the catalog number (observations with NA for any of those attributes
+# were not considered) (136,495)
 a <- mimosa
 a.prime <- a[!is.na(a$institutioncode) &
                !is.na(a$collectioncode) &
@@ -148,18 +148,24 @@ a <- unique(a.prime, by = c("institutioncode",
                             "catalognumber"))
 a <- rbind(a, a.na)
 mimosa <- a
-# rm(a, a.prime, a.na) ?????
 
-#Indicating dataset specific columns
+rm(a, a.prime, a.na) 
+
+# Indicating dataset specific columns
 mimosa <- mimosa %>% rename("municipality_gbif" = municipality)
 
-#Replacing 0 by NA in the coordinates 
+# Replacing 0 by NA in the coordinates 
 mimosa$latitude[mimosa$latitude == 0] <- NA
 mimosa$longitude[mimosa$longitude == 0] <- NA
 
 #Removing registers without identifier name (58,930)
-mimosa$identifiedby[mimosa$identifiedby %in% c("?", "-", "#", "##", "//05/1987",
-                                               "24/X/2013") | mimosa$identifiedby == 0] <- NA
+id_count <- data.frame(plyr::count(mimosa$identifiedby))
+mimosa$identifiedby[mimosa$identifiedby %in% c("?", "-", "#", "##", "#?#", "//05/1987",
+                                               "24/X/2013", 
+                                               "<a href='https://bee.questagame.com/#/profile/34594?questagame_user_id=34594'>wwlearn (Low)</a>",
+                                               "1/4/1983",
+                                               "24/X/2013")
+                    | mimosa$identifiedby == 0] <- NA
 mimosa <- mimosa %>% filter(!is.na(identifiedby))
 
 #Correcting states' names
@@ -178,285 +184,100 @@ for(i in 1:length(province)){
   }
 }
 mimosa$stateprovince <- province
-# rm(province, lookup_states, get_states, i, j) ???
+rm(province, lookup_states, get_states, i, j, id_count)
 mimosa$stateprovince[mimosa$stateprovince == "?" | mimosa$stateprovince == "-"] <- NA
 plyr::count(mimosa$stateprovince) #Checking if everything has gone fine
 
 
-#Filtering by states in which the campos rupestres occur 
-#according to Silveira et al (2016) (31,575) 
-#I'm using just GO and MG
+# Filtering by Goias and Minas Gerais (26,362)
 mimosa <- mimosa %>% filter(is.na(stateprovince) | stateprovince %in% c("Goias", 
-                                                                        "Minas Gerais" 
-                                                                        ))
+                                                                        "Minas Gerais"))
 
-#Removing records without species level identification (30,750)
+# Removing records without species level identification (25,188)
 mimosa <- mimosa %>% filter(!is.na(species))
 mimosa <- mimosa %>% filter(!species %in% c("sp.", "sp1"))
 
-#Removing records not based on preserved specimens and removing the 
-#attribute 'basisofrecord' (30,617)
-#plyr::count(mimosa$basisofrecord)
+# Removing records not based on preserved specimens and removing the 
+# attribute 'basisofrecord' (30,617)
+plyr::count(mimosa$basisofrecord)
 mimosa <- mimosa %>% filter(basisofrecord %in% c("Exsic", "PRESERVED_SPECIMEN",
+                                                 "PreservedSpecimen",
                                                  "s", "S"))
 mimosa <- mimosa %>% dplyr::select(-basisofrecord)
 
 
 #=====================================================================================================#
 
-#=================================#
+#==============================#
 # CLEANING BY IDENTIFIER NAMES #
-#=================================#
+#==============================#
 
-#Creating a vector to work with
-identifiedby <- mimosa$identifiedby
+# Extracting a vector including determiners' names. It is preferable to use this vector instead of the data set itself because any changes are easily reversible. 
+identifiedby <- as.character(mimosa$identifiedby)
 
-#Generating a list of identifiers ordered by frequency of identifications (more identifications
-#is supposed to be related with a better identification)
-#Counting check
-#names.count <- as.data.frame(plyr::count(identifiedby))
-#names.count <- names.count[order(-names.count$freq), ]
+# Ideally, it is better to start with a list of taxonomic specialists' compiled beforehand. Alternatively, as experts likely indentified the majority of samples from a given taxon, it is possible to infer specialists based on identification frequency. In this example we looked for specialists at the top of the list below. 
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
-#R. C. Barneby
-identifiedby <- replace.names(x = identifiedby, top = 0.85, bottom = 0.7, 
-                              check.by = c("R. C. Barneby", "R. C. BARNEBY",
-                                           "Barneby, R. C", "BARNEBY, R. C."),
-                              replace.by = "R. C. Barneby",
-                              not.replace = c("R. Bameby", "R. M. Harley"),
-                              replace = c("R. Barneby (NY)", "Rupert Barneby",
-                                          "BArneby", "R. BARNEBY/G. HATSCHBACH",
-                                          "R. Barneby 85", "R. Barneby (!RL 2014)",
-                                          "R. Barneby, (!RL 2014)", "R. Barneby (!RL2014)",
-                                          "R. Barneby 84", "R. Barneby 93", "Rupert C. Barneby",
-                                          "Rupert Charles Barneby", "R Brandeby", "R. Barneby 1983",
-                                          "R. Barneby (NY) 1983", "R. Barneby 1986-1991", 
-                                          "Rupert Charles Barneby; b.1911; d.2000; Barneby", "R. Bameby"))
+# To improve accuracy, we confirmed if names in 'names.count' with at least 3 identifications were specialists by searching for taxonomic publications for the family of the focal group and authored by each name at Google Scholar. In this example, we searched for: allintitle: Leguminosae OR Mimosa author:"determiner".
 
-#L. M. Borges
-identifiedby <- replace.names(x = identifiedby, top = 0.85, bottom = 0.7, 
-                              check.by = c("L. M. Borges", "Borges, L. M.",
-                                           "L. M. BORGES", "BORGES, L. M."),
-                              replace.by = "L. M. Borges",
-                              replace = c("Leonardo M. Borges", "L.M. Borges et. al.;",
-                                          "L.M. Borges (SPF)", "L.M.Borges (SPF)", 
-                                          "L.M. Borges/13-05-2014"),
-                              not.replace = c("L. M. G. Nogueira"))
+# Next, based on the function 'replace.names', we standardized specialist's names. This is done in two iterations:
+# (1) The first iteration returns, for manual evaluation, the automatically replaced names (names above the 'top' threshold) and names that are worth to be checked (names above the 'bottom' threshold but below the 'top' threshold).
+# (2) In the second iteration, names that were erroneously replaced in the first iteration should be included in the argument 'not replace'. Likewise, names that were supposed to be replaced but were below the 'top' threshold should be included in the argument 'replace'.
 
-#M. F. Simon
-identifiedby <- replace.names(x = identifiedby, top = 0.85, bottom = 0.7, 
-                              check.by = c("M. F. Simon", "Simon, M. F.",
-                                           "M. F. SIMON", "SIMON, M. F."),
-                              replace.by = "M. F. Simon",
-                              not.replace = c("M.S. Simo"),
-                              replace = c("Marcelo F. Simon", "M. Simon, IN LIT. L. P. Queiroz",
-                                          "M. Simon & L. M. Borges", "Simon, MF; Queiroz, LP",
-                                          "Marcelo F Simon", "Marcelo Simon","Simon, MF; Barneby, RC"),
-                              return = TRUE)
+# Because the procedure is iterative, the user should not change the vector 'identifiedBy' directly in the first iteration. For this purpose, we used a secondary vector ('identifiedBy_2'). After the second iteration, when everything should be set, the user must assign 'identifiedBy' as 'identifiedBy_2' before running the protocol for the following name. 
 
-#L. P. de Queiroz
-identifiedby <- replace.names(x = identifiedby, top = 0.85, bottom = 0.7, 
-                              check.by = c("L. P. de Queiroz", "Queiroz, L. P.",
-                                           "L. P. DE QUEIROZ", "QUEIROZ, L. P."),
-                              replace.by = "L. P. de Queiroz",
-                              replace = c("Luciano Paganucci de Queiroz", "L.P.de Queiroz & E.R.de Souza",
-                                          "L.P.de Queiroz & D.Cardoso", "L. P. Queiroz (HUEFS) 2002-01",
-                                          "L.P.de Queiroz & R.M.Santos", "L.P.de Queiroz & T.S.Nunes",
-                                          "D. Queiroz", "L. P. Queiroz (HUEFS) 2002-11",
-                                          "Santos, R.M. dos; Queiroz, L.P. de", "Santos, RM dos; Queiróz, LP de",
-                                          "Santos, RM; Queiroz, LP de","L. Paganucci", "Queiroz, LP de; Lima, MPM de"),
-                              not.replace = c("Queiroz, R.T.", "Queiroz, RT"),
-                              return = T)
+# At the end of the standardizing procedure, the following vector should contain all specialists' names
+specialists <- c()
 
-#R. T. de Queiroz
-identifiedby <- replace.names(x = identifiedby, top = 0.85, bottom = 0.7, 
-                              check.by = c("R. T. de Queiroz", "Queiroz, R. T",
-                                           "R. T. DE QUEIROZ", "QUEIROZ, R. T."),
-                              replace.by = "R. T. de Queiroz",
-                              not.replace = c("L. P. de Queiroz"),
-                              replace = c("R.T, Queiroz"),
-                              return = T)
+# RC Barneby
+replace.by <- "RC Barneby"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c(),
+                                replace = c("Rupert Charles Barneby; b.1911; d.2000; Barneby",
+                                            "R. Barneby (NY) 1983", "Rupert Barneby",
+                                            "confirm by Barneby, R. 1983", "R. Barneby 1986-1991",
+                                            "R. BARNEBY/G. HATSCHBACH",
+                                            "BArneby", "R.Barbeby", "Rupert C. Barneby",
+                                            "R. Barneby (!RL2014)", "R. C. Barneby 1983",
+                                            "Rupert Charles Barneby; b.1911; d.2000; Barneby",
+                                            "barneby", "R. BARLEY", "R.BARNELY", "R. Barneby (!RL 2014)",
+                                            "Barneby, ex. num. cit."))
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
-#V. F. Dutra
-identifiedby <- replace.names(x = identifiedby, top = 0.85, bottom = 0.7, 
-                              check.by = c("V. F. Dutra", "V. F. DUTRA",
-                                           "Dutra, V. F.", "DUTRA, V. F."),
-                              replace.by = "V. F. Dutra",
-                              replace = c("V.F.Dutra (VIC)", "V.F.Dutra (VIC), (!RL 2014)",
-                                          "Valquíria Ferreira Dutra", "Valquiria Ferreira Dutra"),
-                              return = T)
+# M Simon
+replace.by <- "M Simon"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c(),
+                                replace = c("M.Simon & L.M.Borges", "Marcelo Fragomeni Simon",
+                                            "M. Simon, IN LIT. L. P. Queiroz", "M. Simon & L. M. Borges",
+                                            "Simon M.F. & Marcelo F."))
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
-#J. S. Silva
-identifiedby <- replace.names(x = identifiedby, top = 0.9, bottom = 0.7, 
-                              check.by = c("J. S. Silva", "Silva, J. S",
-                                           "J. S. SILVA", "SILVA, J. S."),
-                              replace.by = "J. S. Silva",
-                              not.replace = c("Silva, J.P.", "SILVA, R.R.", "Silva, MS",
-                                              "Silva, J.L.", "Silva, P.", "L. S. Silva",
-                                              "Silva, J.B.", "Silva, R.", "Silva, MJ" ),
-                              replace = c("J.S. Silva (2)", "Silva, JS; Nascimento, JGA",
-                                          "J. S. Silva 2009-08-14", "J. Santos Silva (UEC) 2010-10-27",
-                                          "J.S. Silva; M. Sales", "Silva, J.S.; Sales, M.", "Santos, J.S.",
-                                          "J.S. Silva (UEC)", "J. Santos S.", "J. Santos Silva", "J. Santos S. (!RL 2014)",
-                                          "Juliana Santos Silva (UEC)", "J.S.Silva/14-VIII-2009",
-                                          "Juliana Santos Silva", "Juliana Santos Silva; Universidade Estadual de Campinas"),
-                              return = T)
+# LM Borges
+replace.by <- "LM Borges"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c(),
+                                replace = c("I. M. Borges", "L.M.Borges (SPF)", "L.M. Borges et. al.;",
+                                            "L. M. Borges & M. F. Simon", "L. M. Borges (SPF)",
+                                            "L.M. Borges/13-05-2014", "L. M. Borges (SPF) 2013",
+                                            "Leonardo M. Borges", "Fagg, CW; Borges, LM"))
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
-#G. P.  Lewis
-identifiedby <- replace.names(x = identifiedby, top = 0.9, bottom = 0.7, 
-                              check.by = c("G. P. Lewis", "Lewis, G. P.",
-                                           "G. P. LEWIS", "LEWIS, G. P."),
-                              replace.by = "G.  P. Lewis",
-                              replace = c("Lewis, G.P.; Page, J.S.", "G.P. LEWIS & J.S. PAGE",
-                                          "G,P LEWIS", "Lewis, G.P.; Nascimento, M.S.B.",
-                                          "Lewis, G.P.; Clark, R.", "G.P. Lewis 78",
-                                          "Lewis, G.; Rico, L.", "Gwilym P. Lewis",
-                                          "G. P. Lewis & J. S. Page", "E.P. LEWIS", "G.P. Lewis e",
-                                          "Lewis, G.P.;Klitgaard, B.", "Lewis, G.P.; Ratter, J.A.",
-                                          "G.P. Lewis & J.S. Page", "G. P. Lewis; J. S. Page",
-                                          "Lewis, GP; Ratter, JA"))
-
-#M. L. Guedes
-identifiedby <- replace.names(x = identifiedby, top = 0.80, bottom = 0.7, 
-                              check.by = c("M. L. Guedes", "Guedes, M. L.",
-                                           "M. L. GUEDES", "GUEDES, M. L."),
-                              replace.by = "M. L. Guedes",
-                              not.replace = c("M. L. Fonseca"),
-                              return = TRUE)
-
-#A. P. Savassi-Coutinho
-identifiedby <- replace.names(x = identifiedby, top = 0.85, bottom = 0.7, 
-                              check.by = c("A. P. Savassi-Coutinho", "Savassi-Coutinho, A. P.",
-                                           "A. P. SAVASSI-COUTINHO", "SAVASSI-COUTINHO, A.P."),
-                              replace.by = "A. P. Savassi-Coutinho",
-                              replace = c("Coutinho, A.P.S.", "Coutinho, APS"),
-                              return = T)
-
-#L. S. B. Jordão
-identifiedby <- replace.names(x = identifiedby, top = 0.9, bottom = 0.7, 
-                              check.by = c("L. S. B. Jordão", "Jordão, L. S. B.",
-                                           "L. S. B. JORDÃO", "JORDÃO, L. S. B."),
-                              replace.by = "L. S. B. Jordão",
-                              replace  = c("Lucas S.B. Jordão", "LUCAS S.B.JORDÃO",
-                                           "Lucas S. B. Jordão", "LUCAS JORDÃO", "Lucas Josdão",
-                                           "Lucas, S.B. Jordão", "L.S.B, Jordão", "Lucas Jordão",
-                                           "LucasS.B. Jordão", "Jordao, Lucas", "L.S.B., Jordão",
-                                           "L.S. B. Jordão", "L. Jordão","Jordão, L.","L.S.B.Jordão", 
-                                           "Jordão, LSB", "L.S.B. Jordão"),
-                              return = T)
-
-#O. S. Ribas
-identifiedby <- replace.names(x = identifiedby, top = 0.85, bottom = 0.7, 
-                              check.by = c("O. S. Ribas", "Ribas, O. S.",
-                                           "O. S. RIBAS", "RIBAS, O. S."),
-                              replace.by = "O. S. Ribas",
-                              replace = c("Ribas, OS; Cordeiro, J", "\"\"Ribas, O.S.; Cordeiro, J.\"\"",
-                                          "Ribas, OS; Barbosa, E", "O.S. Ribas & J. Codeiro", 
-                                          "O.S. Ribas & J. Cordeiro", "Cordeiro, J; Ribas, OS",
-                                          "Ribas, OS; Larocca, P", "O.S. Ribas; J. Cordeiro"),
-                              return = T)
-
-#I. B. Lima
-identifiedby <- replace.names(x = identifiedby, top = 0.93, bottom = 0.7, 
-                              check.by = c("I. B. Lima", "Lima, I. B.",
-                                           "I. B. LIMA", "LIMA, I. B."),
-                              replace.by = "I. B. Lima",
-                              return = T)
-
-#M. Morales
-identifiedby <- replace.names(x = identifiedby, top = 0.90, bottom = 0.7, 
-                              check.by = c("M. Morales", "Morales, M.",
-                                           "M. MORALES", "MORALES, M."),
-                              replace.by = "M. Morales",
-                              replace = c("Matias Morales", "M. Morols", "m. Morols"),
-                              not.replace = c("M.Moraes"),
-                              return = T)
-
-#C. W. Fagg
-identifiedby <- replace.names(x = identifiedby, top = 0.90, bottom = 0.7, 
-                              check.by = c("C. W. Fagg", "Fagg, C. W.",
-                                           "C. W. FAGG", "FAGG, C. W."),
-                              replace.by = "C. W. Fagg",
-                              replace = c("Fagg, CW; Borges, LM"),
-                              return = T)
-
-#J. G. Nascimento
-identifiedby <- replace.names(x = identifiedby, top = 0.90, bottom = 0.7, 
-                              check.by = c("J. G. Nascimento", "Nascimento, J. G.",
-                                           "J. G. NASCIMENTO", "NASCIMENTO, J. G."),
-                              replace.by = "J. G. Nascimento",
-                              not.replace = c("L. M. Nascimento", "Nascimento, AFS",
-                                              "Nascimento, FHF", "Nascimento, L.M.",
-                                              "Nascimento, M.S.B.", "J.M. Nascimento",
-                                              "Nascimento"),
-                              replace = c("J. G. A. do Nascimento", "J.G.A.do Nascimento",
-                                          "J.G.A. do Nascimento"),
-                              return = T)
-
-#R. Grether
-identifiedby <- replace.names(x = identifiedby, top = 0.90, bottom = 0.7, 
-                              check.by = c("R. Grether", "Grether, R.",
-                                           "R. GRETHER", "GRETHER, R."),
-                              replace.by = "R. Grether",
-                              return = T)
-
-#E. Córdula
-identifiedby <- replace.names(x = identifiedby, top = 0.90, bottom = 0.7, 
-                              check.by = c("E. Córdula", "Córdula, E.",
-                                           "E. CÓRDULA", "CÓRDULA, E"),
-                              replace.by = "E. Córdula",
-                              return = T)
-
-#A. Bocage
-identifiedby <- replace.names(x = identifiedby, top = 0.90, bottom = 0.7, 
-                              check.by = c("A. Bocage", "Bocage, A.",
-                                           "A. BOCAGE", "BOCAGE, A."),
-                              replace.by = "A. Bocage",
-                              replace = c("A.L.du Bocage Lima", "Bocage, A., Marques, J.S."),
-                              return = T)
-
-#J. R. Pirani
-identifiedby <- replace.names(x = identifiedby, top = 0.90, bottom = 0.7, 
-                              check.by = c("J. R. Pirani", "Pirani, J. R.",
-                                           "J. R. PIRANI", "PIRANI, J. R."),
-                              replace.by = "J. R. Pirani",
-                              replace = c("Pirani, JR; Siniscalchi, CM"),
-                              return = T)
-
-#R. H. Fortunato
-identifiedby <- replace.names(x = identifiedby, top = 0.90, bottom = 0.7, 
-                              check.by = generate.names("R. H.", "Fortunato"),
-                              replace.by = "J. R. Pirani",
-                              replace = c("Reenée Fortunato", "Renée H. Fortunato",
-                                          "Renee H. Fortunato", "Renée H. Forunato"),
-                              return = T)
-
-#H. C. de Lima
-identifiedby <- replace.names(x = identifiedby, top = 0.90, bottom = 0.7, 
-                              check.by = generate.names("H. C.", "de Lima"),
-                              replace.by = "H. C. de Lima",
-                              not.replace = c("R .C. de Lima"),
-                              replace = c("H.C. Lima", "Lima, HC",
-                                          "Lima, H.C.", "H. C. de Lima & L.F.G da Silva",
-                                          "H C Lima", "H.C. Lima & C.M.J. Mattos",
-                                          "H.C.LIMA", "H.C. Lima , C. M. B. Correia",
-                                          "H.C. de LIma", "H.C. de Lima & Marli Pires",
-                                          "Haroldo C. de Lima", "H.C.Lima", "H. C. de Lima & L. F. G. da Silva"),
-                              return = T)
-
-#A. Burkart
-identifiedby <- replace.names(x = identifiedby, top = 0.90, bottom = 0.7, 
-                              check.by = generate.names("A.", "Burkart"),
-                              replace.by = "A. Burkart",
-                              replace = c("A. Burkart (!RL 2014)", "Buskart",
-                                          "A. E. Burkart; L. B. Smith"),
-                              return = T)
-
-#A. M. Miranda
-identifiedby <- replace.names(x = identifiedby, top = 0.90, bottom = 0.7, 
-                              check.by = generate.names("A. M.", "Miranda"),
-                              replace.by = "A. M. Miranda",
-                              replace = c("A.M.Miranda et H.Gomes", "A.M. Miranda; M.L. Guedes"),
-                              return = T)
 
 #Counting check
 names.count <- as.data.frame(plyr::count(identifiedby))
