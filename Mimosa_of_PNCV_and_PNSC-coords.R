@@ -1467,7 +1467,6 @@ specialists <- c(specialists, replace.by)
 
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
-#continue with LD Meireles
 #LD Meireles
 replace.by <- "LD Meireles"
 identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
@@ -1482,6 +1481,383 @@ identifiedby <- identifiedby_2
 specialists <- c(specialists, replace.by)
 
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#RT Queiroz
+replace.by <- "RT Queiroz"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c("LP Queiroz"),
+                                replace = c(
+                                ))
+
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#CT Rizzini
+replace.by <- "CT Rizzini"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c(),
+                                replace = c("Rizzini; A. Mattos"
+                                ))
+
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#VR Scalon
+replace.by <- "VR Scalon"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c(),
+                                replace = c(
+                                ))
+
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#MCTB Messias
+replace.by <- "MCTB Messias"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c(),
+                                replace = c(
+                                ))
+
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#LH Soares-Silva
+replace.by <- "LH Soares-Silva"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c(),
+                                replace = c(
+                                ))
+
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#MSJ Trindade
+replace.by <- "MSJ Trindade"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c(),
+                                replace = c(
+                                ))
+
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#AMSF Vaz
+replace.by <- "AMSF Vaz"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c(),
+                                replace = c("A. Vaz","Angela Maria Studart da Fonseca Vaz"
+                                ))
+
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#A Pott
+replace.by <- "A Pott"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c(),
+                                replace = c(
+                                ))
+
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#SA Harris 
+replace.by <- "SA Harris"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c(),
+                                replace = c(
+                                ))
+
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#M Mendoza (considering as M. Bravo-Mendoza)
+replace.by <- "M Mendoza"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c( "Mendonça, RC"),
+                                replace = c(
+                                ))
+
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#JNC Marchiori
+replace.by <- "JNC Marchiori"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c(),
+                                replace = c(
+                                ))
+
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#JNC Marchiori
+replace.by <- "JNC Marchiori"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c(),
+                                replace = c(
+                                ))
+
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#JGA Nascimento
+replace.by <- "JGA Nascimento"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c("Nascimento, M.S.B.; Alencar, M.E.",
+                                                "Nascimento, M.S.B.", "Nascimento"),
+                                replace = c("J. G. A. do Nascimento","J.G.A.do Nascimento",
+                                            "J.G.A. do Nascimento" 
+                                ))
+
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#G Pereira-Silva
+replace.by <- "G Pereira-Silva"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c( "Pereira, T.O.","Pereira, M" ),
+                                replace = c(
+                                ))
+
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#DM Neves
+replace.by <- "DM Neves"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c("Nee, M."),
+                                replace = c(
+                                ))
+
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#RE Gereau
+replace.by <- "RE Gereau"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c(),
+                                replace = c(
+                                ))
+
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#FS Silveira
+replace.by <- "FS Silveira"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c("Silva, MJ", "Silva, ACB", "Silva, J",
+                                                "SILVEIRA, J.E.", "Silva, CFS"),
+                                replace = c("Fernanda Schmidt Silveira","Schmidt-Silveira, F",
+                                            "Schmidt-Silveira, F."
+                                ))
+
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#CFP Martius
+replace.by <- "CFP Martius"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c("Martins, R.C.","Martins, BP"  ),
+                                replace = c("C. F. P. von Martius"
+                                ))
+
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#DNS Machado
+replace.by <- "DNS Machado"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c(),
+                                replace = c(
+                                ))
+
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#AM Giulietti
+replace.by <- "AM Giulietti"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c(),
+                                replace = c(
+                                ))
+
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#	Henrich, J.E.; Goldblatt, P. What do I do if just Goldblatt is a specialist? 
+#
+#
+#
+#
+
+#P Izaguirre
+replace.by <- "P Izaguirre"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c(),
+                                replace = c(
+                                ))
+
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#LCP Lima
+replace.by <- "LCP Lima"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c("Lima, D.A.", "Lima, A.D.", "Lima, V.C.", 
+                                                "Lima, A.", "LIMA, A.C.R."),
+                                replace = c(
+                                ))
+
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#MA Silva
+replace.by <- "MA Silva"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c("Silva, M.J.", "Silva, M.G. da", "Silva, MJ",
+                                                "Silva, T.C.", "Silva, ACB", "J.M. Silva",
+                                                "AF Silva", "L.A. Silva", "Silva, J.B.",
+                                                "Silva, J", "Silva, N.T.", "SILVEIRA, J.E.", 
+                                                "Silva, J.L.", "Silva, CFS"  ),
+                                replace = c("M. A. da Silva"  
+                                ))
+
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#STOPED HERE
+#M Brandão
+replace.by <- "M Brandão"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c(),
+                                replace = c( 
+                                ))
+
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
 
 #Counting check
 names.count <- as.data.frame(plyr::count(identifiedby))
