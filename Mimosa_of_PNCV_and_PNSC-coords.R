@@ -6,8 +6,8 @@ library(CoordinateCleaner)
 library(flora) 
 library(rgdal) 
 library(raster)
-
-library(RecordLinkage) # this package was missing from the script
+library(flora)
+library(RecordLinkage) 
 
 # Loading functions
 source('functions.R') 
@@ -259,7 +259,7 @@ identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6,
                                 not.replace = c(),
                                 replace = c("M.Simon & L.M.Borges", "Marcelo Fragomeni Simon",
                                             "M. Simon, IN LIT. L. P. Queiroz", "M. Simon & L. M. Borges",
-                                            "Simon M.F. & Marcelo F."))
+                                            "Simon M.F. & Marcelo F.", "Batalha, MA; Simon, MF", "M.A. Batalha & M. Simon"))
 identifiedby <- identifiedby_2
 specialists <- c(specialists, replace.by)
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
@@ -397,7 +397,8 @@ identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6,
                                 replace.by = replace.by,
                                 not.replace = c( ),
                                 replace = c("Buskart","Bukart","A. E. Burkart; L. B. Smith",
-                                            "Arturo Burkart", "A. Burkart (!RL 2014)"  
+                                            "Arturo Burkart", "A. Burkart (!RL 2014)", 
+                                            "A. Macedo & A. Burkart"
                                 ))
 
 identifiedby <- identifiedby_2
@@ -418,7 +419,7 @@ identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6,
                                                 "L.A. Silva","Silva, R.R.", "SILVEIRA, J.E.",
                                                 "Silva, MJ","Silva, M.A. da Silva","Silva, J.B.",
                                                 "Silva, M.A.","Silva, J.L." ),
-                                replace = c(
+                                replace = c("Starling, M.F.V & Silva, A.F."
                                 ))
 
 identifiedby <- identifiedby_2
@@ -473,7 +474,6 @@ specialists <- c(specialists, replace.by)
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
 # R	Vanni
-
 replace.by <- "R	Vanni"
 identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
                                 check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
@@ -690,7 +690,6 @@ specialists <- c(specialists, replace.by)
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
 # G Seijo
-
 replace.by <- "G Seijo"
 identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
                                 check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
@@ -706,7 +705,6 @@ specialists <- c(specialists, replace.by)
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
 # DM Glazier
-
 replace.by <- "DM Glazier"
 identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
                                 check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
@@ -720,21 +718,6 @@ identifiedby <- identifiedby_2
 specialists <- c(specialists, replace.by)
 
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
-
-#M Barreto (is this also HLM barreto?)
-#replace.by <- "M Barreto"
-#identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
-#                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
- #                                                         str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
-  #                              replace.by = replace.by,
-   #                             not.replace = c("Barroso, G.M.","Barroso, GM"),
-    #                            replace = c("Mello Barreto, HL","Mello-Barreto, H.L.","Mello-Barreto"
-     #                           ))
-
-#identifiedby <- identifiedby_2
-#specialists <- c(specialists, replace.by)
-
-#names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
 #ML Fonseca
 replace.by <- "ML Fonseca"
@@ -782,7 +765,6 @@ specialists <- c(specialists, replace.by)
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
 #G Ceccantini
-
 replace.by <- "G Ceccantini"
 identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
                                 check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
@@ -798,7 +780,6 @@ specialists <- c(specialists, replace.by)
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
 #VC Souza
-
 replace.by <- "VC Souza"
 identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
                                 check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
@@ -813,9 +794,8 @@ specialists <- c(specialists, replace.by)
 
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
-#C Proença
-
-replace.by <- "C Proença"
+#C Proen�a
+replace.by <- "C Proen�a"
 identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
                                 check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
                                                           str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
@@ -830,7 +810,6 @@ specialists <- c(specialists, replace.by)
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
 #J Fontella
-
 replace.by <- "J Fontella"
 identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
                                 check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
@@ -846,7 +825,6 @@ specialists <- c(specialists, replace.by)
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
 #DMT Lins
-
 replace.by <- "DMT Lins"
 identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
                                 check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
@@ -862,7 +840,6 @@ specialists <- c(specialists, replace.by)
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
 #F Filardi
-
 replace.by <- "F Filardi"
 identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
                                 check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
@@ -878,7 +855,6 @@ specialists <- c(specialists, replace.by)
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
 #A Fernandes
-
 replace.by <- "A Fernandes"
 identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
                                 check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
@@ -894,7 +870,6 @@ specialists <- c(specialists, replace.by)
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
 #HC Lima
-
 replace.by <- "HC Lima"
 identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
                                 check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
@@ -906,7 +881,7 @@ identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6,
                                 replace = c("H. C. de Lima & L.F.G da Silva","H. C. de Lima & L. F. G. da Silva",
                                             "H.C. de Lima & Marli Pires", "H.C. Lima & C.M.J. Mattos",
                                             "Haroldo Cavalcante de Lima & Robson Daumas Ribeiro",
-                                            "H. C. de Lima"
+                                            "H. C. de Lima", "Haroldo Cavalcanti de Lima"
                                 ))
 
 identifiedby <- identifiedby_2
@@ -915,7 +890,6 @@ specialists <- c(specialists, replace.by)
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
 #HS Irwin
-
 replace.by <- "HS Irwin"
 identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
                                 check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
@@ -929,21 +903,6 @@ identifiedby <- identifiedby_2
 specialists <- c(specialists, replace.by)
 
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
-
-#A Lima (im not sure who A Lima is, there is more than one A Lima specialist)
-#replace.by <- "A Lima"
-#identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
-#                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
- #                                                         str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
-  #                              replace.by = replace.by,
-   #                             not.replace = c(),
-    #                            replace = c(
-     #                           ))
-
-#identifiedby <- identifiedby_2
-#specialists <- c(specialists, replace.by)
-
-#names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
 #L Rico
 replace.by <- "L Rico"
@@ -1257,7 +1216,7 @@ identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6,
                                                           str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
                                 replace.by = replace.by,
                                 not.replace = c( "Barreto, M","Barreto, HLM","Barreto, M."),
-                                replace = c(
+                                replace = c("GRAZIELA","Graziela"
                                 ))
 
 identifiedby <- identifiedby_2
@@ -1459,7 +1418,7 @@ identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6,
                                                           str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
                                 replace.by = replace.by,
                                 not.replace = c(),
-                                replace = c(
+                                replace = c("G. O. A. Malme"
                                 ))
 
 identifiedby <- identifiedby_2
@@ -1786,12 +1745,6 @@ specialists <- c(specialists, replace.by)
 
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
-#	Henrich, J.E.; Goldblatt, P. What do I do if just Goldblatt is a specialist? 
-#
-#
-#
-#
-
 #P Izaguirre
 replace.by <- "P Izaguirre"
 identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
@@ -1842,7 +1795,6 @@ specialists <- c(specialists, replace.by)
 
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
-#STOPED HERE
 #M Brandão
 replace.by <- "M Brandão"
 identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
@@ -1934,7 +1886,50 @@ specialists <- c(specialists, replace.by)
 
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
-#stopped checking "A. Macedo & A. Burkart" at google scholar
+#MMF Silva
+replace.by <- "MMF Silva"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c("AF Silva"),
+                                replace = c("Félix-da-Silva, M.M."
+                                ))
+
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#A Gentry
+replace.by <- "A Gentry"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c(),
+                                replace = c(
+                                ))
+
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#JW Grimes
+replace.by <- "JW Grimes"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c(),
+                                replace = c(
+                                ))
+
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
 #Counting check
 names.count <- as.data.frame(plyr::count(identifiedby))
@@ -1944,52 +1939,149 @@ names.count <- names.count[order(-names.count$freq), ]
 mimosa$identifiedby <- identifiedby
 
 #Filtering (20,672)
-specialists <- c("R. C. Barneby",
-                 "L. M. Borges",
-                 "L. P. de Queiroz",
-                 "R. T. de Queiroz",
-                 "J. S. Silva",
-                 "M. S. Simon",
-                 "G. P. Lewis",
-                 "L. S. B. Jordão",
-                 "A. P. Savassi-Coutinho",
-                 "M. L. Guedes",
-                 "O. S. Ribas",
-                 "J. G. Nascimento",
-                 "J. R. Pirani",
-                 "I. B. Lima",
-                 "M. Morales",
-                 "C. W. Fagg",
-                 "R. Grether",
-                 "E. Córdula",
-                 "A. Bocage",
-                 "R. H. Fortunato",
-                 "H. C. de Lima",
-                 "A. Burkart",
-                 "A. M. Miranda")
+specialists <- c("RC Barneby",
+                 "LM Borges",
+                 "M Simon",
+                 "VF Dutra",
+                 "APS Coutinho",
+                 "JS Silva",
+                 "OS Ribas",
+                 "LSB Jordão",
+                 "GP Lewis",
+                 "RH Fortunato",
+                 "A Burkart",
+                 "RG Grether",
+                 "AF Silva",
+                 "R	Vanni",
+                 "M Morales",
+                 "HC Lima",
+                 "R Liesner",
+                 "JY Tamashiro",
+                 "CW Fagg",
+                 "JR Pirani",
+                 "ML Fonseca",
+                 "FCP Garcia",
+                 "EA Ulibarri",
+                 "MPM Lima",
+                 "C Proença",
+                 "GPE Rocha",
+                 "M Flores-Cruz",
+                 "A Fernandes",
+                 "WA Rodrigues",
+                 "M Atahuachi",
+                 "B Mackinder",
+                 "M Sobral",
+                 "RS Cowan",
+                 "W Mantovani",
+                 "PO Rosa",
+                 "VC Souza",
+                 "HS Irwin",
+                 "G Seijo",
+                 "J Fontella",
+                 "DMT Lins",
+                 "JGA Nascimento",
+                 "GM Barroso",
+                 "L Rico",
+                 "P Taubert",
+                 "BAS Pereira",
+                 "DM Glazier",
+                 "JF Pastore",
+                 "AV Lopes",
+                 "LH Soares-Silva",
+                 "G Ceccantini",
+                 "VF Mansano",
+                 "GM Antar",
+                 "A Ducke",
+                 "CT Rizzini",
+                 "FS Silveira",
+                 "G Siqueira",
+                 "RR Silva",
+                 "C Romero",
+                 "F Filardi",
+                 "SRDFS Nunes",
+                 "E Nunes",
+                 "EP Heringer",
+                 "G Gardner",
+                 "G Pereira-Silva",
+                 "G Bentham",
+                 "MS Oliveira",
+                 "RE Gereau",
+                 "AMSF Vaz",
+                 "DA Neill",
+                 "GF Flores",
+                 "HF Leitão-Filho",
+                 "JPM Brenan",
+                 "MVB Xavier",
+                 "RD Ribeiro",
+                 "SA Harris",
+                 "VR Scalon",
+                 "G Malme",
+                 "H Lorenzi",
+                 "LD Meireles",
+                 "AP Fortuna-Perez",
+                 "DM Neves",
+                 "TP Mendes",
+                 "A Pott",
+                 "JS Santos",
+                 "JW Grimes",
+                 "M Mendoza",
+                 "MCTB Messias",
+                 "MG Caxambu",
+                 "MSJ Trindade",
+                 "O Poncy",
+                 "RM Harley",
+                 "AM Giulietti",
+                 "CFP Martius",
+                 "DNS Machado",
+                 "LCP Lima",
+                 "M Brandão",
+                 "P Izaguirre"
+                 )
+
 mimosa <- mimosa %>% filter(identifiedby %in% specialists)
 
-# rm(identifiedby, specialists) ???
+rm(identifiedby, specialists) 
 
 #===========================#
 # CLEANING SCIENTIFIC NAMES #
 #===========================#
 
+library(flora)
+
 #Generating a column for scientific names (without authors and including infraspecific epithet)
+
 mimosa$gen_sp <- paste(mimosa$genus,
                        mimosa$species,
                        mimosa$subspecies,
                        sep = " ")
 
+#I added the following code from cleaning-calli
 
-#Loading *.csv after manual correction 
-#(???)
-taxa_corrected <- read.csv("lists/Mimosa/taxa_corrected.csv", stringsAsFactors = F, 
+#Names
+taxa <- plyr::count(mimosa$gen_sp)
+taxa$taxa <- as.character(taxa$x)
+
+#Removing NA (character derived from 'subspecies' attribute)
+for(i in 1:length(taxa)){
+  taxa[i] <- gsub("NA", "", taxa[i])
+  taxa[i] <- trimws(taxa[i])
+}
+
+#Suggesting with flora (and retrieving a few additional information that may be useful)
+taxa_suggested <-get.taxa(taxa, vegetation.type = TRUE, 
+                          habitat = TRUE, domain = TRUE, life.form = TRUE)
+
+#Writing *.csv for manual checking
+write.csv(taxa_suggested, file = "taxa_suggested.csv", row.names = F)
+
+#Loading *.csv after manual correction
+taxa_corrected <- read.csv("taxa_corrected_mimosa.csv", stringsAsFactors = F, 
                            na.strings = c("NA",""))
 
+#Establishing a data set with information on genus, species and varieties
 taxa_gensp <- tibble(gen = NA, sp = NA, var = NA, .rows = nrow(taxa_corrected))
 for(i in 1:nrow(taxa_corrected)){
-  str <- strsplit(taxa_corrected$corrected[i], split = " ")[[1]]
+  str <- strsplit(taxa_corrected$corrected.name[i], split = " ")[[1]]
   if(length(str) == 2){
     taxa_gensp$gen[i] <- str[1]
     taxa_gensp$sp[i] <- str[2]
@@ -1999,26 +2091,212 @@ for(i in 1:nrow(taxa_corrected)){
     taxa_gensp$var[i] <- paste(str[3], str[4], sep = " ")
   }
 }
-taxa_gensp$replace <- taxa_corrected$taxa
+
+#Original names and correspondent corrected names 
+taxa_gensp$replace <- taxa_corrected$original.search
+
+#Removing invalid taxa (6,564)
+mimosa$gen_sp <- gsub("NA", "", mimosa$gen_sp)
+mimosa$gen_sp <- trimws(mimosa$gen_sp)
+invalid_taxa <- taxa_gensp$replace[is.na(taxa_gensp$gen) | taxa_gensp$gen != "Mimosa"]
+mimosa <- mimosa[!mimosa$gen_sp %in% invalid_taxa, ]
+
+#Correcting the data set (varieties suppressed)
+taxa_gensp <- taxa_gensp[!is.na(taxa_gensp$gen), ]
+for(i in 1:nrow(mimosa)){
+  for(j in 1:nrow(taxa_gensp)){
+    if(mimosa$gen_sp[i] == taxa_gensp$replace[j]){
+      mimosa$gen_sp[i] <- paste(taxa_gensp$gen[j], taxa_gensp$sp[j], sep = " ")
+    }
+  }
+}
+
+rm(taxa, taxa_suggested, taxa_corrected, taxa_gensp, invalid_taxa, str)
+
+#======================================================================================#
+
+#================#
+# SPLITTING DATA #
+#================#
+
+#Coords (6,159)
+mimosa_coord <- mimosa %>% filter(!is.na(latitude) & !is.na(longitude))
+
+#No coords (6,942)
+mimosa_noCoord <- mimosa %>% filter(is.na(latitude) | is.na(longitude))
+
+#======================#
+# CLEANING COORDINATES #
+#======================#
+
+#Cleaning (3,796)
+mimosa_coordFlagged <- mimosa_coord %>% clean_coordinates(lon = "longitude",
+                                                        lat = "latitude",
+                                                        species = "gen_sp",
+                                                        value = "flagged",
+                                                        tests = c("equal", "gbif", 
+                                                                  "institutions", 
+                                                                  "outliers", "seas",
+                                                                  "zeros"))
+
+invalid_coords <- mimosa_coord[mimosa_coordFlagged == FALSE, ]
+mimosa_coordClean <- mimosa_coord[mimosa_coordFlagged  == TRUE, ]
+
+#Binding invalid_coords to mimosa_noCoord (6,943)
+mimosa_noCoord <- rbind(mimosa_noCoord, invalid_coords)
+
+rm(invalid_coords, mimosa_coordFlagged, mimosa_coord)
 
 
+# Checking occurrence of  previously selected species from my project
+
+selected_species<- read.csv("dataset/mimosa_spp_phd2.csv", header=T, sep = ';')
+colnames(selected_species)<-c("genus_and_species", "clade")
+
+selected_species<-separate(data = selected_species, col = genus_and_species, into = c("genus", "species", "variety"), sep = "\\_") 
+
+mimosa_coordClean$selected_species<- mimosa_coordClean$species %in% selected_species$species
+
+mimosa_noCoord$selected_species<- mimosa_noCoord$species %in% selected_species$species
+
+# Checking occurrence of species  present in the phylogeny
+phylogeny_species<- read.csv("dataset/Mimosa_data_updated_140520-VASCONCELOS2020.csv", 
+                             sep = ",")
+
+phylogeny_species<-separate(data = phylogeny_species, col = cleaned_name, 
+                            into = c("genus", "species", "variety"), sep = "\\_")
+
+mimosa_coordClean$phylogeny_species<- mimosa_coordClean$species %in% phylogeny_species$species
+
+mimosa_noCoord$phylogeny_species<- mimosa_noCoord$species %in% phylogeny_species$species
+
+#======================================================================================================#
+
+#------------------------#
+# Ploting occurence maps #
+#------------------------#
 
 
-#Defining projection
+library(raster)
+library(rgdal)
+library(sf)
+
+#Reading shapefiles: Brazilian terrestrial territory, Chapada dos Veadeiros, Serra do Cipo
+br <- readOGR("shapefiles/BR/BR_UF_2020.shp", encoding = "UTF-8") # IBGE: https://downloads.ibge.gov.br/downloads_geociencias.htm
+pncv <- readOGR("shapefiles/PNCV/2conferido_Zoneamento_PNCV_10_03_2020.shp", encoding = "UTF-8") # ICMBIO: https://www.gov.br/icmbio/pt-br/assuntos/biodiversidade/unidade-de-conservacao/unidades-de-biomas/cerrado/lista-de-ucs/parna-da-chapada-dos-veadeiros/parna-da-chapada-dos-veadeiros
+pnsc <- readOGR("shapefiles/PNSC/parna_serra_do_cipo-polygon.shp", encoding = "UTF-8") # ICMBIO: https://www.gov.br/icmbio/pt-br/assuntos/biodiversidade/unidade-de-conservacao/unidades-de-biomas/cerrado/lista-de-ucs/parna-da-serra-do-cipo/parna-da-serra-do-cipo
+
+# Defining projection
 crswgs84 <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
 
-pncv<-readOGR("shapefiles/PNCV/2conferido_Zoneamento_PNCV_10_03_2020.shp") #ICMBIO: https://www.gov.br/icmbio/pt-br/assuntos/biodiversidade/unidade-de-conservacao/unidades-de-biomas/cerrado/lista-de-ucs/parna-da-chapada-dos-veadeiros/parna-da-chapada-dos-veadeiros
+# Reprojecting
+br <- spTransform(br, crswgs84)
+pncv <- spTransform(pncv, crswgs84)
+pnsc<- spTransform(pnsc, crswgs84)
 
-pnsc<-readOGR("shapefiles/PNSC/parna_serra_do_cipo-polygon.shp") # ICMBIO: https://www.gov.br/icmbio/pt-br/assuntos/biodiversidade/unidade-de-conservacao/unidades-de-biomas/cerrado/lista-de-ucs/parna-da-serra-do-cipo/parna-da-serra-do-cipo
-  
-mun <- readOGR("shapefiles/BR/BR_UF_2020.shp") #IBGE: https://downloads.ibge.gov.br/downloads_geociencias.htm
+# Visualizing 
+plot(br)
+plot(pncv, add = TRUE)
+plot(pnsc, add = TRUE)
 
-#Projecting
-proj4string(pnsc) <- crswgs84
-#br <- spTransform(br, crswgs84)
-mun <- spTransform(mun, crswgs84)
+# GO and MG states
+br@data
+go_mg <- br[br@data$SIGLA_UF %in% c("GO", "MG"), ]
 
-#plot(pncv)
-#plot(pnsc)
+# Visualizing 
+plot(go_mg)
+plot(pncv, add = TRUE)
+plot(pnsc, add = TRUE)
+
+#Removing information that we do not need
+pncv2 <- aggregate(pncv)
+
+#PNCV map 
+extent(pncv)
+coords_pncv<- subset(mimosa_coordClean, longitude >= -47.90742 & longitude <= -46.97436 
+                     & latitude >= -14.21634  & latitude <= -13.61845)
+coordinates(coords_pncv) <- ~ longitude + latitude
+proj4string(coords_pncv) <- crswgs84
+
+plot(pncv)
+points(coords_pncv)
+
+#PNSC map
+extent(pnsc)
+coords_pnsc<- subset(mimosa_coordClean, longitude > -43.63072 & longitude < -43.45546 
+                & latitude > -19.54183  & latitude < -19.2201)
+coordinates(coords_pnsc) <- ~ longitude + latitude
+proj4string(coords_pnsc) <- crswgs84
+
+plot(pnsc)
+points(coords_pnsc)
+
+#======================================================================================================#
+
+#--------------------#
+# Exploring datasets #
+#--------------------#
+
+# Species occurence with coords
+
+#PNCV
+
+#Which and how many species record in CV? 
+unique(coords_pncv@data$species, incomparables = F)
+
+#Which and how many species of CV are present on previously selected species list?
+unique(subset(coords_pncv@data, selected_species == "TRUE")$species, incomparables = F)
+
+#Which and how many specis of CV are present in the phylogeny?
+unique(subset(coords_pncv@data, phylogeny_species == "TRUE")$species, incomparables = F)
+
+#What are the most abundant species? 
+coords_pncv@data %>% count(species)
+
+#What are the most abundant place?
+coords_pncv@data %>% count(municipality_gbif)
+
+#PNSC
+#Which and how many species record in SC? 
+unique(coords_pnsc@data$species, incomparables = F)
+
+#Which and how many species of SC are present on previously selected species list?
+unique(subset(coords_pnsc@data, selected_species == "TRUE")$species, incomparables = F)
+
+#Which and how many specis of CV are present in the phylogeny?
+unique(subset(coords_pnsc@data, phylogeny_species == "TRUE")$species, incomparables = F)
+
+#What are the most abundant species? 
+coords_pnsc@data %>% count(species)
+
+#What are the most abundant place?
+coords_pnsc@data %>% count(municipality_gbif)
+
+
+# Species occurence with nocoords
+
+#Cleaning by locality
+mimosa_noCoord2<- mimosa_noCoord %>% select (species, subspecies, stateprovince, locality,municipality_gbif,
+                           selected_species, phylogeny_species) %>% 
+  filter (grepl('cip�|cipo|Cip�|Cipo|CIPO|CIP�|veadeiros|Veadeiros|VEADEIROS', locality))
+
+#Which and how many species record? 
+unique(mimosa_noCoord2$species, incomparables = F)
+
+#Which and how many species are present on previously selected species list?
+unique(subset(mimosa_noCoord2, selected_species == "TRUE")$species, incomparables = F)
+
+#Which and how many specis are present in the phylogeny?
+unique(subset(mimosa_noCoord2, phylogeny_species == "TRUE")$species, incomparables = F)
+
+#What are the most abundant species? 
+mimosa_noCoord2 %>% count(species)
+
+#What are the most abundant place?
+mimosa_noCoord2 %>% count(municipality_gbif)
+
+#write.csv2(mimosa_coordClean, file = "lists/mimosa_coords.csv")
+#write.csv2(mimosa_noCoord2, file = "lists/mimosa_noCoords.csv")
+
 
 
