@@ -794,8 +794,8 @@ specialists <- c(specialists, replace.by)
 
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
-#C Proença
-replace.by <- "C Proença"
+#C Proen?a
+replace.by <- "C Proen?a"
 identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
                                 check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
                                                           str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
@@ -2153,9 +2153,12 @@ rm(invalid_coords, mimosa_coordFlagged, mimosa_coord)
 selected_species<- read.csv("dataset/mimosa_spp_phd2.csv", header=T, sep = ';')
 colnames(selected_species)<-c("genus_and_species", "clade")
 
-selected_species<-separate(data = selected_species, col = genus_and_species, into = c("genus", "species", "variety"), sep = "\\_") 
+selected_species<-separate(data = selected_species, col = genus_and_species, 
+                           into = c("genus", "species", "variety"), sep = "\\_") 
 
 mimosa_coordClean$selected_species<- mimosa_coordClean$species %in% selected_species$species
+
+mimosa_coordClean$clade<-
 
 mimosa_noCoord$selected_species<- mimosa_noCoord$species %in% selected_species$species
 
@@ -2168,13 +2171,19 @@ phylogeny_species<-separate(data = phylogeny_species, col = cleaned_name,
 
 mimosa_coordClean$phylogeny_species<- mimosa_coordClean$species %in% phylogeny_species$species
 
+mimosa_coordClean<-merge(mimosa_coordClean, phylogeny_species[,c( "species","clade")], 
+                         by.x = "species", by.y="species", all.x=T)
+
 mimosa_noCoord$phylogeny_species<- mimosa_noCoord$species %in% phylogeny_species$species
+
+mimosa_noCoord<-merge(mimosa_noCoord, phylogeny_species[,c( "species","clade")], 
+                      by.x = "species", by.y="species", all.x=T)
 
 #======================================================================================================#
 
-#------------------------#
-# Ploting occurence maps #
-#------------------------#
+#--------------------------#
+# Plotting occurrence maps #
+#--------------------------#
 
 
 library(raster)
@@ -2210,6 +2219,8 @@ plot(pnsc, add = TRUE)
 
 #Removing information that we do not need
 pncv2 <- aggregate(pncv)
+
+#Plotting maps
 
 #PNCV map 
 extent(pncv)
@@ -2277,8 +2288,8 @@ coords_pnsc@data %>% count(municipality_gbif)
 
 #Cleaning by locality
 mimosa_noCoord2<- mimosa_noCoord %>% select (species, subspecies, stateprovince, locality,municipality_gbif,
-                           selected_species, phylogeny_species) %>% 
-  filter (grepl('cipó|cipo|Cipó|Cipo|CIPO|CIPÓ|veadeiros|Veadeiros|VEADEIROS', locality))
+                           selected_species, phylogeny_species, clade) %>% 
+  filter (grepl('cip?|cipo|Cip?|Cipo|CIPO|CIP?|veadeiros|Veadeiros|VEADEIROS', locality))
 
 #Which and how many species record? 
 unique(mimosa_noCoord2$species, incomparables = F)
@@ -2295,8 +2306,65 @@ mimosa_noCoord2 %>% count(species)
 #What are the most abundant place?
 mimosa_noCoord2 %>% count(municipality_gbif)
 
-#write.csv2(mimosa_coordClean, file = "lists/mimosa_coords.csv")
-#write.csv2(mimosa_noCoord2, file = "lists/mimosa_noCoords.csv")
 
+#======================================================================================================#
 
+##########################
+# Phylogenetic diversity #
+##########################
+
+library(raster)
+library(rgdal)
+
+#Defining grid cells' size
+grids_size <- c(0.6, 0.6)
+
+#Checking shapefiles: pnsc,pncv and Brazilian terrestrial territory
+pnsc
+pncv
+br
+
+#Projecting
+crswgs84 <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs") #EPSG:4326 - WGS 84
+proj4string(pncv) <- crswgs84
+br <- spTransform(br, crswgs84)
+
+#Creating spatial grids representing the campos rupestres areas
+grid <- raster(extent(pncv), resolution = grids_size, crs = proj4string(pncv))
+gridPolygon <- rasterToPolygons(grid)
+gridPolygon$id <- 1:nrow(gridPolygon)
+intersectGridClipped <- raster::intersect(gridPolygon, br)
+intersectGrid <- gridPolygon[gridPolygon$id %in% intersectGridClipped$id, ]
+
+#writeOGR(intersectGrid, ".", "shapefiles/grids/grids_pncv", driver="ESRI Shapefile")
+
+#grids_pncs<- readOGR("shapefiles/grids/grids_pncv.shp")
+
+# ?
+coords_2 <- mimosa_coordClean
+coordinates(coords_2) <- ~ longitude + latitude
+proj4string(coords_2) <- crswgs84
+coords_2 <- over(coords_2, intersectGrid)
+coords_2$id_2 <- 1:nrow(coords_2) 
+coords$id_2 <- 1:nrow(coords_2)
+coords_2 <- coords_2 %>% filter(!is.na(id))
+coords <- coords %>% filter(id_2 %in% coords_2$id_2)
+coords$id_grid <- coords_2$id
+coords <- coords[ , -which(colnames(coords) == "id_2")]
+
+#Composing a presence/absence matrix
+mimosa_matrix <- matrix(data = NA, nrow = length(unique(mimosa_cr$id_grid)), 
+                        ncol = length(unique(mimosa_cr$gen_sp)))
+mimosa_matrix <- as.data.frame(mimosa_matrix)
+colnames(mimosa_matrix) <- unique(mimosa_cr$gen_sp)
+rownames(mimosa_matrix) <- unique(mimosa_cr$id_grid)
+for(i in 1:nrow(mimosa_matrix)){
+  for(j in 1:ncol(mimosa_matrix)){
+    if(colnames(mimosa_matrix)[j] %in% mimosa_cr$gen_sp[mimosa_cr$id_grid == rownames(mimosa_matrix)[i]]){
+      mimosa_matrix[i, j] <- 1
+    } else {
+      mimosa_matrix[i, j] <- 0  
+    }
+  }
+}
 
