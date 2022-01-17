@@ -172,7 +172,7 @@ mimosa <- mimosa %>% filter(!is.na(identifiedby))
 #Correcting states' names
 province <- mimosa$stateprovince
 
-lookup_states <- fread(file = "dataset/lookup_states.csv", na.strings = c("", NA),
+lookup_states <- fread(file = "lists/lookup_states.csv", na.strings = c("", NA),
                        encoding = "UTF-8")
 #write.csv(lookup_states, file = "lists/lookup_states.csv", row.names = F)
 get_states <- lookup_states$Incorreto
@@ -2151,8 +2151,8 @@ rm(invalid_coords, mimosa_coordFlagged, mimosa_coord)
 # Saving dataset #
 #================#
 
-write.csv2(mimosa_coordClean, file = "dataset/mimosa_coords.csv")
-write.csv2(mimosa_noCoord2, file = "dataset/mimosa_noCoords.csv")
+write.csv2(mimosa_coordClean, file = "data/dataset/mimosa_coords.csv")
+write.csv2(mimosa_noCoord, file = "data/dataset/mimosa_noCoords.csv")
 
 
 
