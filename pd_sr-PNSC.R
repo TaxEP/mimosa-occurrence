@@ -28,7 +28,7 @@ library(ape)
 matrix_PNSC <- read.csv(file = "data/dataset/mimosa_matrix_PNSC.csv", row.names = 1)
 
 # Reading tree
-mimosa_tree <- read.nexus("data/trees/pruned_tree-mimosa_PNSC.nex")
+mimosa_tree = read.nexus("data/trees/pruned_tree-mimosa_PNSC.nex")
 
 # Reading grids
 grids_PNSC <- readOGR("data/shapefiles/grids/PNSC.shp") 
@@ -92,7 +92,7 @@ pd_plot <- spplot(pd_poly,
                   zcol = "pd.obs",
                   xlim = c(-43.63072, -43.43072  ), ylim = c(-19.5201, -19.2201 ),
                   par.settings=list(fontsize = list(text = 21)),
-                  at = seq(0, 132.77, length.out = 16),
+                  at = seq(0, 70.1, length.out = 16),
                   colorkey = TRUE, 
                   sp.layout = list(list(PNSC, fill = "gray")), 
                   col.regions = makeTransparent(rev(magma(16)), alpha = 0.7), 
@@ -103,7 +103,7 @@ sr_plot <- spplot(pd_poly,
                   zcol = "ntaxa", 
                   xlim = c(-43.63072, -43.43072  ), ylim = c(-19.5201, -19.2201 ),
                   par.settings=list(fontsize = list(text = 21)),
-                  at = seq(0, 15, length.out = 16),
+                  at = seq(0, 7, length.out = 16),
                   colorkey = TRUE, 
                   sp.layout = list(list(PNSC, fill = "gray")), 
                   col.regions = makeTransparent(rev(magma(16)), alpha = 0.7), 
@@ -114,7 +114,7 @@ pdres_plot <- spplot(pd_poly,
                      zcol = "residuals",
                      xlim = c(-43.63072, -43.43072  ), ylim = c(-19.5201, -19.2201 ),
                      par.settings=list(fontsize = list(text = 21)),
-                     at = seq(-17.1401, 9.2301, length.out = 16),
+                     at = seq(-3.461, 2.561, length.out = 16),
                      colorkey = TRUE, 
                      sp.layout = list(list(PNSC, fill = "gray")), 
                      col.regions = makeTransparent(c(viridis(16)[1:7], "khaki1", rev(heat.colors(16)[1:8])), alpha = 0.7), 

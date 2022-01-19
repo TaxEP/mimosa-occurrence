@@ -89,5 +89,11 @@ for(i in 1:nrow(mimosa_matrix_PNSC)){
   }
 }
 
+# Pruning matrix to contain only species occurring in the phylogeny
+mimosa_matrix_PNSC <- mimosa_matrix_PNSC[ , colnames(mimosa_matrix_PNSC) %in% mimosa_pruned.tree$tip.label]
+
+
 #Saving matrix
 write.csv(mimosa_matrix_PNSC, "data/dataset/mimosa_matrix_PNSC.csv", row.names = TRUE)
+
+plot(mimosa_pruned.tree)
