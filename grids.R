@@ -1,10 +1,15 @@
 #======================================================================================================#
 
+# OBS: Changing grids's size may chang thee number of records that will overlap with the grids.
+# This is because a higher resolution may fit better the extension of the original polygons.
+
+#======================================================================================================#
+
 library(raster)
 library(rgdal)
 
 # Defining grid cells' size
-grids_size <- c(0.1, 0.1)
+grids_size <- c(0.05, 0.05)
 
 # Reading shapefiles
 pncv <- readOGR("data/shapefiles/PNCV/2conferido_Zoneamento_PNCV_10_03_2020.shp") 

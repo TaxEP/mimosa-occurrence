@@ -56,7 +56,7 @@ mimosa_tree$tip.label <- tip_labels$vars_sup[-which(duplicated_logical)]
 #=====================================================================================================#
 
 #==============#
-# PRUNING TREE #
+# PRUNING TREE # 
 #==============#
 
 mimosa_pruned.tree <- drop.tip(mimosa_tree, mimosa_tree$tip.label[!mimosa_tree$tip.label %in% coords_PNCV$gen_sp])
@@ -88,6 +88,9 @@ for(i in 1:nrow(mimosa_matrix_PNCV)){
     }
   }
 }
+
+# Pruning matrix to contain only species occurring in the phylogeny
+mimosa_matrix_PNCV <- mimosa_matrix_PNCV[ , colnames(mimosa_matrix_PNCV) %in% mimosa_pruned.tree$tip.label]
 
 #Saving matrix
 write.csv(mimosa_matrix_PNCV, "data/dataset/mimosa_matrix_PNCV.csv", row.names = TRUE)
