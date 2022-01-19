@@ -40,16 +40,6 @@ gridPolygon$id <- 1:nrow(gridPolygon)
 intersectGridClipped <- raster::intersect(gridPolygon, pnsc)
 intersectGrid <- gridPolygon[gridPolygon$id %in% intersectGridClipped$id, ]
 
-# Saving spatial grids
+# Saving spatial grids shapefile
 writeOGR(gridPolygon_pncv, ".", "data/shapefiles/grids/PNCV", driver = "ESRI Shapefile")
 writeOGR(gridPolygon_pnsc, ".", "data/shapefiles/grids/PNSC", driver = "ESRI Shapefile")
-
-#Saving spatial grids in a shapefile
-#writeOGR(intersectGrid, ".", "shapefiles/grids_cr/grids_cr", driver="ESRI Shapefile")
-
-# Getting coordinates for each grid
-# coords <- coordinates(intersectGrid)
-#dist_grids <- distm(coords)
-#rownames(dist_grids) <- rownames(intersectGrid@data)
-#colnames(dist_grids) <- rownames(intersectGrid@data)
-#write.csv(file = "results/dist_grids.csv", dist_grids)
