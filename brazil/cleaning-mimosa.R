@@ -175,7 +175,7 @@ mimosa <- mimosa %>% filter(!is.na(latitude) | !is.na(longitude))
 
 #======================================================================================#
 
-# Ploting a graph to check 
+# Plotting density graph of total identifications by experts.
 ggplot(mimosa %>% filter(identifiedby %in% names.count$x[names.count$freq >= 50]), 
        aes(x=reorder(identifiedby,identifiedby, 
                      function(x)-length(x)))) + 
