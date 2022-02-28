@@ -326,7 +326,7 @@ identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6,
                                 replace = c( "L. P. de Queiroz (HUEFS)", "L.P.de Queiroz & T.S.Nunes", 
                                              "L.P.de Queiroz & D.Cardoso", "L.P.de Queiroz & R.M.Santos",
                                              "L.P.de Queiróz", "L. Paganucci", "Guedes, ML; Queiroz, LP de",
-                                             "L. P. de Queiroz"
+                                             "L. P. de Queiroz", "Santos, RM; Queiroz, LP de"
                                             ))
 identifiedby <- identifiedby_2
 specialists <- c(specialists, replace.by)
@@ -698,7 +698,7 @@ identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6,
                                 replace.by = replace.by,
                                 not.replace = c(  
                                 ),
-                                replace = c("E.Córdula", "E. CORDULA & M. ALVES"
+                                replace = c("E.Córdula", "E. CORDULA & M. ALVES", "Mattos, C; Córdula"
                                 ))
 identifiedby <- identifiedby_2
 specialists <- c(specialists, replace.by)
@@ -762,8 +762,124 @@ identifiedby <- identifiedby_2
 specialists <- c(specialists, replace.by)
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
-#	JG Carvalho-Sobrinho
+#EP Seleme
+replace.by <- "EP Seleme"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c(  
+                                ),
+                                replace = c(
+                                ))
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
-# AL Gasper
+#RH Fortunato
+replace.by <- "RH Fortunato"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c(  
+                                ),
+                                replace = c("René Fortunato"
+                                ))
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
+
+#	HC Lima
+replace.by <- "HC Lima"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c("Lima, L.C.P.", "Lima, M.R.", "Lima, IB", "Lima, AS", "Lima, RB",
+                                                "Lima, M.P.", "Lima, A. A.", "Lima, G.A.", "Lima, J", "Lima, J.",
+                                                "Lima, MPM de", "Lima, BCS", "Lima, M.E.L.", "Lima, M. de", "Lima, MPM",
+                                                "Lima, I.B", "Lima", "Lima, J.R.", "Lima, M.P.M.", "Lima, MP de", "Lima H.S.",
+                                                "Lima, F. .F.", "Lima, V.C.", "LIMA, A.C.R."
+                                ),
+                                replace = c("H. C. de Lima & L. F. G. da Silva", "Haroldo Cavalcante de Lima & Robson Daumas Ribeiro",
+                                            "\"\"Lima, H.C. de; Ribeiro, R.D.\"\"", "H.C. de Lima & T.M. Rodrigues", 
+                                            "H.C. de Lima & Marli Pires", "H. C. de Lima & L.F.G da Silva", "H.C. Lima; C.M.J. Mattos",
+                                            "H.C. Lima & T.M. Rodrigues", "H.C. Lima & C. Mattos",  "H.C. Lima; C.M.J. Mattos; A. Santos",
+                                            "H.C. Lima; C.M.J. Mattos & A. Santos", "H.C. Lima, C.M.J. Mattos & A. Santos", 
+                                            "H.C. Lima & C.M.J. Mattos", "H C de Lima", "H.C.de Lima; J.E.Meireles", "H. C. de Lima"
+                                            
+                                ))
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#HF Leitão-Filho
+replace.by <- "HF Leitão-Filho"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c(  
+                                ),
+                                replace = c(
+                                ))
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#STS Miotto
+replace.by <- "STS Miotto"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c(  
+                                ),
+                                replace = c(
+                                ))
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#A Ducke
+replace.by <- "A Ducke"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c(  
+                                ),
+                                replace = c(
+                                ))
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#Hoehne, FC ?
+
+#JY Tamashiro
+replace.by <- "JY Tamashiro"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c(  
+                                ),
+                                replace = c("Jorge Yoshio Tamashiro", "J.Y.T", "J.Y. Tamashiro & L.D. Meireles"    
+                                ))
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
+
+#	MPM Lima
+
+#	Pinto, GCP
+
+#Völtz, R.R.
+
+#	Batalha, MA; Aragaki, S
+
+#Carregosa, T
 
