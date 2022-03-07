@@ -37,9 +37,9 @@ library(rgdal)
 library(sf)
 
 #Reading shapefiles: Brazilian terrestrial territory, Chapada dos Veadeiros, Serra do Cipo
-br <- readOGR("shapefiles/BR/BR_UF_2020.shp", encoding = "UTF-8") # IBGE: https://downloads.ibge.gov.br/downloads_geociencias.htm
-pncv <- readOGR("shapefiles/PNCV/2conferido_Zoneamento_PNCV_10_03_2020.shp", encoding = "UTF-8") # ICMBIO: https://www.gov.br/icmbio/pt-br/assuntos/biodiversidade/unidade-de-conservacao/unidades-de-biomas/cerrado/lista-de-ucs/parna-da-chapada-dos-veadeiros/parna-da-chapada-dos-veadeiros
-pnsc <- readOGR("shapefiles/PNSC/parna_serra_do_cipo-polygon.shp", encoding = "UTF-8") # ICMBIO: https://www.gov.br/icmbio/pt-br/assuntos/biodiversidade/unidade-de-conservacao/unidades-de-biomas/cerrado/lista-de-ucs/parna-da-serra-do-cipo/parna-da-serra-do-cipo
+br <- readOGR("data/shapefiles/BR/BR_UF_2020.shp", encoding = "UTF-8") # IBGE: https://downloads.ibge.gov.br/downloads_geociencias.htm
+pncv <- readOGR("data/shapefiles/PNCV/2conferido_Zoneamento_PNCV_10_03_2020.shp", encoding = "UTF-8") # ICMBIO: https://www.gov.br/icmbio/pt-br/assuntos/biodiversidade/unidade-de-conservacao/unidades-de-biomas/cerrado/lista-de-ucs/parna-da-chapada-dos-veadeiros/parna-da-chapada-dos-veadeiros
+pnsc <- readOGR("data/shapefiles/PNSC/parna_serra_do_cipo-polygon.shp", encoding = "UTF-8") # ICMBIO: https://www.gov.br/icmbio/pt-br/assuntos/biodiversidade/unidade-de-conservacao/unidades-de-biomas/cerrado/lista-de-ucs/parna-da-serra-do-cipo/parna-da-serra-do-cipo
 
 # Defining projection
 crswgs84 <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
@@ -77,6 +77,8 @@ plot(pncv)
 points(coords_pncv)
 
 #PNSC map
+mimosa_coordClean <- read.csv("data/dataset/mimosa_coordClean.csv")
+
 extent(pnsc)
 coords_pnsc<- subset(mimosa_coordClean, longitude > -43.63072 & longitude < -43.45546 
                      & latitude > -19.54183  & latitude < -19.2201)
