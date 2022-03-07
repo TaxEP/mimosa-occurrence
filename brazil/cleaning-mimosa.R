@@ -857,7 +857,22 @@ identifiedby <- identifiedby_2
 specialists <- c(specialists, replace.by)
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
-#Hoehne, FC ?
+#FC Hoehne 
+# Obs: He was not considered an expert according to the google scholar search. 
+# However, through personal communication with other specialists, we decided to include him as an identifier.
+
+replace.by <- "FC Hoehne"
+identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
+                                check.by = generate.names(str_split(replace.by, pattern = " ", n = 2)[[1]][1],
+                                                          str_split(replace.by, pattern = " ", n = 2)[[1]][2]),
+                                replace.by = replace.by,
+                                not.replace = c("W. Hoehne"
+                                ),
+                                replace = c("F. C. Hochne"
+                                ))
+identifiedby <- identifiedby_2
+specialists <- c(specialists, replace.by)
+names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
 #JY Tamashiro
 replace.by <- "JY Tamashiro"
@@ -873,13 +888,9 @@ identifiedby <- identifiedby_2
 specialists <- c(specialists, replace.by)
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
-#	MPM Lima
+# Ploting a graph with ids per specialist names >= to 25. To do this, we first transform "identifyby" vector into a dataframe. 
 
-#	Pinto, GCP
-
-#Völtz, R.R.
-
-#	Batalha, MA; Aragaki, S
-
-#Carregosa, T
-
+identifyby_dataframe <- as.data.frame(identifiedby)
+ggplot(identifyby_dataframe %>% filter(identifiedby %in% names.count$x[names.count$freq >= 25]), 
+       aes(x=reorder(identifiedby,identifiedby, function(x)-length(x)))) + 
+       geom_bar()
