@@ -7,8 +7,14 @@ library(flora)
 library(rgdal) 
 library(raster)
 
-#Loading functions
-source('functions.R') 
+# Loading functions
+source('functions.R')
+
+# Set wd (Yago)
+setwd("B:/yagob/GoogleDrive/Academia/Parallel_projects/Mimosa_occurrence")
+
+# Set wd (Monique)
+setwd("G:/.shortcut-targets-by-id/19Bt9xRgbQsy9ySW31FgR7E5aEscE0jKG/Mimosa_occurrence")
 
 #====================================================================================================#
 
@@ -175,10 +181,16 @@ mimosa <- mimosa %>% filter(!is.na(latitude) | !is.na(longitude))
 
 #======================================================================================#
 
-# Plotting density graph of total identifications by experts.
+# Plotting a bar plot of total identifications per name (before standardization)
 ggplot(mimosa %>% filter(identifiedby %in% names.count$x[names.count$freq >= 50]), 
        aes(x=reorder(identifiedby,identifiedby, 
                      function(x)-length(x)))) + 
+  geom_bar()
+
+# Where do records identified by "Administrador" come from?
+administrador <- mimosa %>% filter(identifiedby %in% c("Administrador")) %>% dplyr::select(institutioncode, species, identifiedby)
+ggplot(administrador, 
+       aes(x=reorder(institutioncode,institutioncode, function(x)-length(x)))) + 
   geom_bar()
 
 #=================================#
@@ -888,9 +900,35 @@ identifiedby <- identifiedby_2
 specialists <- c(specialists, replace.by)
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
-# Ploting a graph with ids per specialist names >= to 25. To do this, we first transform "identifyby" vector into a dataframe. 
+# Replacing column
+mimosa_exp <- mimosa
+mimosa_exp$identifiedby <- identifiedby
 
+# Plotting a bar plot of total identifications per name (after standardization), with a minimum of 25 identifications
 identifyby_dataframe <- as.data.frame(identifiedby)
 ggplot(identifyby_dataframe %>% filter(identifiedby %in% names.count$x[names.count$freq >= 25]), 
        aes(x=reorder(identifiedby,identifiedby, function(x)-length(x)))) + 
-       geom_bar()
+  geom_bar() +
+  theme(axis.text.x = element_text(angle = 90))
+
+# Plotting a bar plot of total identifications per name (after standardization), with a minimum of 95 identifications
+identifiedby_dataframe <- as.data.frame(identifiedby)
+ggplot(identifiedby_dataframe %>% filter(identifiedby %in% names.count$x[names.count$freq >= 95]), 
+       aes(x=reorder(identifiedby,identifiedby, function(x)-length(x)))) + 
+  geom_bar() +
+  theme(axis.text.x = element_text(angle = 45))
+
+# Filtering by specialists (27,324)
+mimosa_exp1 <- mimosa_exp %>% filter(identifiedby %in% specialists)
+
+# Filtering by specialists with a minimum of 26 identifications (27,324)
+mimosa_exp2 <- mimosa_exp %>% filter(identifiedby %in% 
+                                      specialists[specialists %in% 
+                                                    identifiedby_dataframe[identifiedby_dataframe$identifiedby %in%
+                                                                           names.count$x[names.count$freq > 25], ]])  
+                                                            
+# Filtering by specialists with a minimum of 95 identifications (26,559)
+mimosa_exp3 <- mimosa_exp %>% filter(identifiedby %in% 
+                                       specialists[specialists %in% 
+                                                     identifiedby_dataframe[identifiedby_dataframe$identifiedby %in%
+                                                                              names.count$x[names.count$freq > 94], ]])  
