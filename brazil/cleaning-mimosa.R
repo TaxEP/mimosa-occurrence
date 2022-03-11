@@ -955,51 +955,13 @@ taxa <- as.character(taxa$x)
 for(i in 1:length(taxa)){
   taxa[i] <- gsub("NA", "", taxa[i])
   taxa[i] <- trimws(taxa[i])
-  taxa[i] <- gsub(pattern = "var. ", x = taxa[i], replacement = "")
   taxa[i] <- gsub(pattern = "  ", x = taxa[i], replacement = " ")
 }
 
-# Reading the mimosoid checklist (ADD REFERENCE LATER)
-mimosoid_cl <- read.csv("datasets/mimosoid_checklist.csv")
+#Suggesting with flora (and retrieving a few additional information that may be useful)
+taxa_suggested <-get.taxa(taxa, vegetation.type = TRUE, 
+                          habitat = TRUE, domain = TRUE, life.form = TRUE)
 
-# Extracting Mimosa names
-mimosa_cl <- mimosoid_cl[grepl(x = mimosoid_cl$taxon_name,
-                               pattern = "Mimosa"), ]
+#Writing *.csv for manual checking
+write.csv(taxa_suggested, file = "taxa_suggested.csv", row.names = F)
 
-taxon_names <- separate(mimosa_cl, taxon_name, into = c("genus", "species", "fv", "infra"), sep = " ")
-
-taxon_names <- taxon_names %>% dplyr:: select(genus,
-                                              species,
-                                              fv,
-                                              infra,
-                                              accepted_name)
-
-taxon_names <- taxon_names[!is.na(taxon_names$fv), ]
-
-taxon_names2 <- c()
-for (i in 1:nrow(taxon_names)){
-  if(taxon_names$fv[i] != "var."){
-    taxon_names2 <- c(taxon_names2, paste(taxon_names$genus[i],
-                                          taxon_names$species[i]))
-  } else{
-    taxon_names2 <- c(taxon_names2, paste(taxon_names$genus[i],
-                                          taxon_names$species[i],
-                                          taxon_names$infra[i]))
-  }
-}
-
-taxon_names <- data.frame(name = taxon_names2, accepted_name = taxon_names$accepted_name)
-
-taxon_names <- unique(taxon_names,
-                      by = "name")
-
-accepted_names <- c()
-for(i in 1:length(taxa)){
-  if(taxa[i] %in% taxon_names$name){
-    accepted_names <- c(accepted_names, as.character(taxon_names$accepted_name[taxon_names$name == taxa[i]]))
-  } else{
-    accepted_names <- c(accepted_names, NA)
-  }
-}
-
-# CRIAR COLUNA COM ID PRA CADA LINHA
