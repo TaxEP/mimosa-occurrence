@@ -958,10 +958,16 @@ for(i in 1:length(taxa)){
   taxa[i] <- gsub(pattern = "  ", x = taxa[i], replacement = " ")
 }
 
-#Suggesting with flora (and retrieving a few additional information that may be useful)
-taxa_suggested <-get.taxa(taxa, vegetation.type = TRUE, 
+# Suggesting with flora (and retrieving a few additional information that may be useful)
+taxa_suggested <- get.taxa(taxa, vegetation.type = TRUE, 
                           habitat = TRUE, domain = TRUE, life.form = TRUE)
 
-#Writing *.csv for manual checking
+# Organizing columns
+taxa_suggested <- taxa_suggested[ , c(1, 2, 4, 5, 6, 8, 11, 12, 13, 14, 10, 9, 7, 3)]
+
+# Adding a column for observations
+taxa_suggested$obs <- NA
+
+# Writing *.csv for manual checking
 write.csv(taxa_suggested, file = "taxa_suggested.csv", row.names = F)
 
