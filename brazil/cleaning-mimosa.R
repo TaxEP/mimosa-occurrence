@@ -159,7 +159,8 @@ rm(a, a.prime, a.na)
 # Indicating the source of the municipality attribute
 mimosa <- mimosa %>% rename("municipality_gbif" = municipality)
 
-# Replacing 0 by NA in the coordinates 
+# Replacing 0 by NA in the coordinates
+# Even though the Equator line crosses the Brazilian territory, plain zero coordinates are often unreliable (see Zizka et al., 2019)
 mimosa$latitude[mimosa$latitude == 0] <- NA
 mimosa$longitude[mimosa$longitude == 0] <- NA
 
@@ -177,7 +178,8 @@ mimosa <- mimosa %>% filter(basisofrecord %in% c("Exsic", "PRESERVED_SPECIMEN",
 mimosa <- mimosa %>% dplyr::select(-basisofrecord)
 
 # Removing records without coordinates (38,652)
-mimosa <- mimosa %>% filter(!is.na(latitude) | !is.na(longitude))
+mimosa <- mimosa[!is.na(mimosa$latitude), ]
+mimosa <- mimosa[!is.na(mimosa$longitude), ]
 
 #======================================================================================#
 
@@ -969,5 +971,64 @@ taxa_suggested <- taxa_suggested[ , c(1, 2, 4, 5, 6, 8, 11, 12, 13, 14, 10, 9, 7
 taxa_suggested$obs <- NA
 
 # Writing *.csv for manual checking
-write.csv(taxa_suggested, file = "taxa_suggested.csv", row.names = F)
+#write.csv(taxa_suggested, file = "taxa_suggested.csv", row.names = F)
 
+# Loading *.csv after manual correction
+taxa_corrected <- read.csv("taxa_corrected.csv", stringsAsFactors = F, 
+                           na.strings = c("NA",""))
+
+# Establishing a data set with information on genus, species and varieties
+taxa_gensp <- tibble(gen = NA, sp = NA, infra = NA, .rows = nrow(taxa_corrected))
+for(i in 1:nrow(taxa_corrected)){
+  str <- strsplit(taxa_corrected$accepted.name[i], split = " ")[[1]]
+  if(length(str) == 2){
+    taxa_gensp$gen[i] <- str[1]
+    taxa_gensp$sp[i] <- str[2]
+  } else if(length(str) == 4){
+    taxa_gensp$gen[i] <- str[1]
+    taxa_gensp$sp[i] <- str[2]
+    taxa_gensp$infra[i] <- paste(str[3], str[4], sep = " ")
+  }
+}
+
+# Original names and correspondent corrected names 
+taxa_gensp$replace <- taxa_corrected$original.search
+
+# Removing invalid taxa (27,237)
+mimosa$gen_sp <- gsub("NA", "", mimosa$gen_sp) # removing NA strings from records of taxa without information regarding the infraspecific epithet
+mimosa$gen_sp <- trimws(mimosa$gen_sp) # removing white spaces for correspondence
+invalid_taxa <- taxa_gensp$replace[is.na(taxa_gensp$gen) | taxa_gensp$gen != "Mimosa"] # generating a list of invalid taxa
+mimosa <- mimosa[!mimosa$gen_sp %in% invalid_taxa, ] # removing invalid taxa
+
+# Correcting the data set according to the taxa_gensp list
+taxa_gensp <- taxa_gensp[!is.na(taxa_gensp$gen), ] # removing records that are NA for the gen field
+for(i in 1:nrow(mimosa)){
+  for(j in 1:nrow(taxa_gensp)){
+    if(mimosa$gen_sp[i] == taxa_gensp$replace[j]){
+      mimosa$gen_sp[i] <- paste(taxa_gensp$gen[j], taxa_gensp$sp[j], taxa_gensp$infra[j], sep = " ") # pasting all the taxa_gensp fields into one
+    }
+  }
+}
+
+# Removing NA strings from records of taxa without information regarding the infraspecific epithet
+mimosa$gen_sp <- gsub("NA", "", mimosa$gen_sp)
+mimosa$gen_sp <- trimws(mimosa$gen_sp) # removing white spaces
+
+#======================================================================================#
+
+#======================#
+# CLEANING COORDINATES #
+#======================#
+
+#Cleaning (26,396)
+mimosa_coordFlagged <- mimosa %>% clean_coordinates(lon = "longitude",
+                                                        lat = "latitude",
+                                                        species = "gen_sp",
+                                                        value = "flagged",
+                                                        tests = c("equal", "gbif", 
+                                                                  "institutions", 
+                                                                  "outliers", "seas",
+                                                                  "zeros"))
+
+invalid_coords <- mimosa[mimosa_coordFlagged == FALSE, ]
+mimosa_coordClean <- mimosa[mimosa_coordFlagged  == TRUE, ]
