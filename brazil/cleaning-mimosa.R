@@ -13,7 +13,7 @@ setwd("B:/yagob/GoogleDrive/Academia/Parallel_projects/Mimosa_occurrence")
 # Set wd (Monique)
 setwd("G:/.shortcut-targets-by-id/19Bt9xRgbQsy9ySW31FgR7E5aEscE0jKG/Mimosa_occurrence")
 
-# Loading functions
+# Loading customized functions
 source('functions.R')
 
 #====================================================================================================#
@@ -26,7 +26,7 @@ source('functions.R')
 # GBIF #
 #======#
 
-# Reading GBIF data
+# Reading GBIF data (94,743)
 gbif <- fread(file = "datasets/gbif.txt",
               na.strings = c("", NA), stringsAsFactors = F, encoding = "UTF-8")
 
@@ -67,18 +67,19 @@ gbif <- gbif %>% rename("species" = specificEpithet,
 # Giving an unique ID number for each record
 gbif <- cbind(id = 1:nrow(gbif), gbif)
 
-# Converting gbif$yearcollected (integer) into string
+# Converting the yearcollected field (integer) into string
+# in order to match splink data
 gbif$yearcollected <- as.character(gbif$yearcollected)
 
 #=============#
 # speciesLink #
 #=============#
 
-# Reading splink (Warning message because of double quotes. Not a problem in this context)
+# Reading splink (Warning message because of double quotes. Not a problem here) (60,817)
 splink <- fread(file = "datasets/splink.txt", 
                 na.strings = c("", NA), stringsAsFactors = F, encoding = "UTF-8")
 
-# Selecting important attributes
+# Reducing data dimensionality by selecting only necessary columns
 splink <- splink %>% dplyr::select(institutioncode,
                                                  collectioncode,
                                                  catalognumber,
@@ -96,8 +97,8 @@ splink <- splink %>% dplyr::select(institutioncode,
                                                  longitude,
                                                  latitude)
 
-# Coercing coordinates into numeric values (NAs are introduced by coercion in observations
-# with string coordinate values)
+# Coercing coordinates into numeric values (NAs are introduced by coercion whenever coordinates
+# are presented as strings)
 splink$longitude <- as.numeric(as.character(splink$longitude))
 splink$latitude <- as.numeric(as.character(splink$latitude))
 
@@ -110,7 +111,7 @@ splink <- cbind(id = (nrow(gbif) + 1):(nrow(gbif) + nrow(splink)), splink)
 # CONCATENATING DATASETS #
 #========================#
 
-# Merging gbif and splink (), and adding a column to define the original dataset
+# Merging gbif and splink (155,560), and adding a column to define the original dataset
 # for each observation
 merge.with.source <- function(x, y, name.x = "X", name.y = "Y") {
   x.df <- cbind(x, datsrc.x = name.x)
@@ -160,44 +161,34 @@ rm(a, a.prime, a.na)
 mimosa <- mimosa %>% rename("municipality_gbif" = municipality)
 
 # Replacing 0 by NA in the coordinates
-# Even though the Equator line crosses the Brazilian territory, plain zero coordinates are often unreliable (see Zizka et al., 2019)
+# Even though the Equator line crosses the Brazilian territory, plain zero coordinates 
+# are often unreliable (see Zizka et al., 2019)
 mimosa$latitude[mimosa$latitude == 0] <- NA
 mimosa$longitude[mimosa$longitude == 0] <- NA
 
 # Removing records without determiner's name (81,988)
 mimosa <- mimosa %>% filter(!is.na(identifiedby))
 
-# Removing records without identification at the species level (77,951)
+# Removing records without identification at species level (77,951)
 mimosa <- mimosa %>% filter(!is.na(species))
 
 # Removing records that are not based on preserved specimens and removing the 
-# attribute 'basisofrecord' (77,678)
-# plyr::count(mimosa$basisofrecord)
+# basisofrecord field (77,678)
+plyr::count(mimosa$basisofrecord) # important to check the strings correspondent 
+# to a preserved specimen basis of record
 mimosa <- mimosa %>% filter(basisofrecord %in% c("Exsic", "PRESERVED_SPECIMEN",
                                                  "s", "S", "PreservedSpecimen"))
 mimosa <- mimosa %>% dplyr::select(-basisofrecord)
 
-# Removing records without coordinates (38,652)
+# Removing records without valid coordinates (38,523)
 mimosa <- mimosa[!is.na(mimosa$latitude), ]
 mimosa <- mimosa[!is.na(mimosa$longitude), ]
 
 #======================================================================================#
 
-# Plotting a bar plot of total identifications per name (before standardization)
-ggplot(mimosa %>% filter(identifiedby %in% names.count$x[names.count$freq >= 50]), 
-       aes(x=reorder(identifiedby,identifiedby, 
-                     function(x)-length(x)))) + 
-  geom_bar()
-
-# Where do records identified by "Administrador" come from?
-administrador <- mimosa %>% filter(identifiedby %in% c("Administrador")) %>% dplyr::select(institutioncode, species, identifiedby)
-ggplot(administrador, 
-       aes(x=reorder(institutioncode,institutioncode, function(x)-length(x)))) + 
-  geom_bar()
-
-#=================================#
+#==============================#
 # CLEANING BY IDENTIFIER NAMES #
-#=================================#
+#==============================#
 
 # Creating a vector to work with
 identifiedby <- mimosa$identifiedby
@@ -209,10 +200,24 @@ identifiedby <- as.character(mimosa$identifiedby)
 # Ideally, it is better to start with a list of taxonomic specialists' compiled beforehand. 
 # Alternatively, as experts likely indentified the majority of samples from a given taxon, 
 # it is possible to infer specialists based on identification frequency. Here we looked for 
-# specialists at the top of the list below. 
+# specialists by assessing names that identified at least 25 records. 
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
-# To improve accuracy, we confirmed if names in 'names.count' with at least 3 identifications
+# Plotting a bar plot of total identifications per name (before standardization).
+# This offers an idea of an identification frequency per name below which the 
+# number of identified records become stable and does not plummet.
+# Here we plotted all the names that identified at least 25 records and we learned 
+# that they included most names with the highest identification frequencies. 
+# This is a trial-and-error approach that aims to identify the ideal minimum identification 
+# frequency that a given name needs to present in order to be assessed according to the method detailed below.
+ggplot(mimosa %>% filter(identifiedby %in% names.count$x[names.count$freq >= 25]), 
+       aes(x=reorder(identifiedby,identifiedby, 
+                     function(x)-length(x)))) + 
+  geom_bar() + 
+  theme(axis.text.x = element_text(angle = 90))
+ 
+
+# To improve accuracy, we confirmed if names in 'names.count' with at least 25 identifications
 # were specialists by searching for taxonomic publications for the family of the focal group
 # and authored by each name at Google Scholar. Here, we searched for: 
 # allintitle: Leguminosae OR Mimosa author:"determiner".
@@ -902,40 +907,11 @@ identifiedby <- identifiedby_2
 specialists <- c(specialists, replace.by)
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
-# Replacing column
-mimosa_exp <- mimosa
-mimosa_exp$identifiedby <- identifiedby
+# Replacing the identifiedby field in the original dataset
+mimosa$identifiedby <- identifiedby
 
-# Plotting a bar plot of total identifications per name (after standardization), with a minimum of 25 identifications
-#identifyby_dataframe <- as.data.frame(identifiedby)
-#ggplot(identifyby_dataframe %>% filter(identifiedby %in% names.count$x[names.count$freq >= 25]), 
-#       aes(x=reorder(identifiedby,identifiedby, function(x)-length(x)))) + 
-#  geom_bar() +
-#  theme(axis.text.x = element_text(angle = 90))
-
-# Plotting a bar plot of total identifications per name (after standardization), with a minimum of 95 identifications
-#identifiedby_dataframe <- as.data.frame(identifiedby)
-#ggplot(identifiedby_dataframe %>% filter(identifiedby %in% names.count$x[names.count$freq >= 95]), 
-#       aes(x=reorder(identifiedby,identifiedby, function(x)-length(x)))) + 
-#  geom_bar() +
-#  theme(axis.text.x = element_text(angle = 45))
-
-# Filtering by specialists (27,324)
-mimosa_exp1 <- mimosa_exp %>% filter(identifiedby %in% specialists)
-
-# Filtering by specialists with a minimum of 26 identifications (27,324)
-#mimosa_exp2 <- mimosa_exp %>% filter(identifiedby %in% 
-#                                      specialists[specialists %in% 
-#                                                    identifiedby_dataframe[identifiedby_dataframe$identifiedby %in%
-#                                                                           names.count$x[names.count$freq > 25], ]])  
-                                                            
-# Filtering by specialists with a minimum of 95 identifications (26,559)
-#mimosa_exp3 <- mimosa_exp %>% filter(identifiedby %in% 
-#                                       specialists[specialists %in% 
-#                                                     identifiedby_dataframe[identifiedby_dataframe$identifiedby %in%
-#                                                                              names.count$x[names.count$freq > 94], ]])  
-
-mimosa <- mimosa_exp1
+# Filtering by specialists (27,233)
+mimosa <- mimosa %>% filter(identifiedby %in% specialists)
 
 #======================================================================================#
 
@@ -943,41 +919,42 @@ mimosa <- mimosa_exp1
 # CLEANING SCIENTIFIC NAMES #
 #===========================#
 
-# Generating a column for scientific names (without authors and including infraspecific epithet)
+# Generating a column for scientific names (without authors and including the infraspecific epithet)
 mimosa$gen_sp <- paste(mimosa$genus,
                       mimosa$species,
                       mimosa$subspecies,
                       sep = " ")
 
-# Extracting scientific names
+# Extracting scientific names into a vector to work with
 taxa <- plyr::count(mimosa$gen_sp)
 taxa <- as.character(taxa$x)
 
-# Removing NA (character derived from 'subspecies' attribute) COMENTAR LINHA A LINHA
+# Standardizing the formatting of all names
 for(i in 1:length(taxa)){
-  taxa[i] <- gsub("NA", "", taxa[i])
-  taxa[i] <- trimws(taxa[i])
-  taxa[i] <- gsub(pattern = "  ", x = taxa[i], replacement = " ")
+  taxa[i] <- gsub("NA", "", taxa[i]) # removing the character NA
+  taxa[i] <- trimws(taxa[i]) # removing white space
+  taxa[i] <- gsub(pattern = "  ", x = taxa[i], replacement = " ") # replacing double spaces by single spaces
 }
 
-# Suggesting with flora (and retrieving a few additional information that may be useful)
+# Suggesting names using the package 'flora' (and retrieving a few additional information that may be useful)
 taxa_suggested <- get.taxa(taxa, vegetation.type = TRUE, 
                           habitat = TRUE, domain = TRUE, life.form = TRUE)
 
-# Organizing columns
+# Reorganizing columns in order to facilitate the manual checking procedure (see below)
 taxa_suggested <- taxa_suggested[ , c(1, 2, 4, 5, 6, 8, 11, 12, 13, 14, 10, 9, 7, 3)]
 
-# Adding a column for observations
+# Adding a column dedicated to observations
 taxa_suggested$obs <- NA
 
-# Writing *.csv for manual checking
+# Writing *.csv for the manual checking procedure
 #write.csv(taxa_suggested, file = "taxa_suggested.csv", row.names = F)
 
-# Loading *.csv after manual correction
+# Loading *.csv after the manual checking procedure
 taxa_corrected <- read.csv("taxa_corrected.csv", stringsAsFactors = F, 
                            na.strings = c("NA",""))
 
-# Establishing a data set with information on genus, species and varieties
+# Establishing a dataset with information on genus, species and varieties (or subspecies)
+# The order of observations is the same as for the taxa_corrected dataset
 taxa_gensp <- tibble(gen = NA, sp = NA, infra = NA, .rows = nrow(taxa_corrected))
 for(i in 1:nrow(taxa_corrected)){
   str <- strsplit(taxa_corrected$accepted.name[i], split = " ")[[1]]
@@ -991,16 +968,16 @@ for(i in 1:nrow(taxa_corrected)){
   }
 }
 
-# Original names and correspondent corrected names 
+# Adding a field that contains the original name for each corrected name (i.e., the names that should be replaced)
 taxa_gensp$replace <- taxa_corrected$original.search
 
-# Removing invalid taxa (27,237)
+# Removing invalid taxa (27,146)
 mimosa$gen_sp <- gsub("NA", "", mimosa$gen_sp) # removing NA strings from records of taxa without information regarding the infraspecific epithet
-mimosa$gen_sp <- trimws(mimosa$gen_sp) # removing white spaces for correspondence
+mimosa$gen_sp <- trimws(mimosa$gen_sp) # removing white spaces for the sake of correspondence
 invalid_taxa <- taxa_gensp$replace[is.na(taxa_gensp$gen) | taxa_gensp$gen != "Mimosa"] # generating a list of invalid taxa
 mimosa <- mimosa[!mimosa$gen_sp %in% invalid_taxa, ] # removing invalid taxa
 
-# Correcting the data set according to the taxa_gensp list
+# Correcting the dataset according to the taxa_gensp list
 taxa_gensp <- taxa_gensp[!is.na(taxa_gensp$gen), ] # removing records that are NA for the gen field
 for(i in 1:nrow(mimosa)){
   for(j in 1:nrow(taxa_gensp)){
@@ -1020,7 +997,7 @@ mimosa$gen_sp <- trimws(mimosa$gen_sp) # removing white spaces
 # CLEANING COORDINATES #
 #======================#
 
-#Cleaning (26,396)
+# Flagging problematic record according to the 'CoordinateCleaner' package (26,396)
 mimosa_coordFlagged <- mimosa %>% clean_coordinates(lon = "longitude",
                                                         lat = "latitude",
                                                         species = "gen_sp",
@@ -1030,5 +1007,9 @@ mimosa_coordFlagged <- mimosa %>% clean_coordinates(lon = "longitude",
                                                                   "outliers", "seas",
                                                                   "zeros"))
 
-invalid_coords <- mimosa[mimosa_coordFlagged == FALSE, ]
-mimosa_coordClean <- mimosa[mimosa_coordFlagged  == TRUE, ]
+invalid_coords <- mimosa[mimosa_coordFlagged == FALSE, ] # subsetting flagged records
+mimosa_coordClean <- mimosa[mimosa_coordFlagged  == TRUE, ] # subsetting valid records
+
+# Writing *.csv for subsequent analyses 
+write.csv(mimosa_coordClean, file = "datasets/mimosa-clean.csv", row.names = F)
+
