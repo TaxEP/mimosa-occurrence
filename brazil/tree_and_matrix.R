@@ -106,4 +106,4 @@ for(i in 1:nrow(mimosa_matrix)){
 }
 
 # Saving matrix as *.csv
-write.csv(mimosa_matrix, "matrices/mimosa_matrix.csv", row.names = TRUE)
+write.csv(mimosa_matrix, "datasets/mimosa_matrix.csv", row.names = TRUE)
