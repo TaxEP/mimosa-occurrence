@@ -352,8 +352,8 @@ specialists <- c(specialists, replace.by)
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
 # ML Guedes 
-# Obs: She was not considered an expert according to the google scholar search. 
-# However, through personal communication with other specialists, we decided to include her as an identifier.
+# Obs: Not considered an expert according to the Google Search search. 
+# However, due to personal communication with a Mimosoid specialist, we decided to include him as an identifier.
 
 replace.by <- "ML Guedes"
 identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
@@ -514,8 +514,8 @@ specialists <- c(specialists, replace.by)
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
 # G Hatschbach (?) 
-# Obs: He was not considered an expert according to the google scholar search. 
-# However, through personal communication with other specialists, we decided to include him as an identifier.
+# Obs: Not considered an expert according to the Google Search search. 
+# However, due to personal communication with a Mimosoid specialist, we decided to include him as an identifier.
 
 replace.by <- "G Hatschbach"
 identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
@@ -877,8 +877,8 @@ specialists <- c(specialists, replace.by)
 names.count <- as.data.frame(plyr::count(identifiedby))[order(-as.data.frame(plyr::count(identifiedby))$freq), ]
 
 #FC Hoehne 
-# Obs: He was not considered an expert according to the google scholar search. 
-# However, through personal communication with other specialists, we decided to include him as an identifier.
+# Obs: Not considered an expert according to the Google Search search. 
+# However, due to personal communication with a Mimosoid specialist, we decided to include him as an identifier.
 
 replace.by <- "FC Hoehne"
 identifiedby_2 <- replace.names(x = identifiedby, top = 0.85, bottom = 0.6, 
@@ -947,11 +947,11 @@ taxa_suggested <- taxa_suggested[ , c(1, 2, 4, 5, 6, 8, 11, 12, 13, 14, 10, 9, 7
 taxa_suggested$obs <- NA
 
 # Writing *.csv for the manual checking procedure
-#write.csv(taxa_suggested, file = "taxa_suggested.csv", row.names = F)
+#write.csv(taxa_suggested, file = "taxa_suggested.csv", row.names = F, encoding = "UTF-8")
 
 # Loading *.csv after the manual checking procedure
-taxa_corrected <- read.csv("taxa_corrected.csv", stringsAsFactors = F, 
-                           na.strings = c("NA",""))
+taxa_corrected <- read.csv("lists/taxa_corrected.csv", stringsAsFactors = F, 
+                           na.strings = c("NA",""), encoding = "UTF-8")
 
 # Establishing a dataset with information on genus, species and varieties (or subspecies)
 # The order of observations is the same as for the taxa_corrected dataset
@@ -1011,5 +1011,37 @@ invalid_coords <- mimosa[mimosa_coordFlagged == FALSE, ] # subsetting flagged re
 mimosa_coordClean <- mimosa[mimosa_coordFlagged  == TRUE, ] # subsetting valid records
 
 # Writing *.csv for subsequent analyses 
-write.csv(mimosa_coordClean, file = "datasets/mimosa-clean.csv", row.names = F)
+write.csv(mimosa_coordClean, file = "datasets/mimosa-clean.csv", row.names = F,
+          fileEncoding = "UTF-8")
 
+#======================================================================================#
+
+#============================#
+# PREPARING FOR THE ANALYSES #
+#============================#
+
+# Reading the dataset
+mimosa_clean <- read.csv(file = "datasets/mimosa-clean.csv", na.strings = c("", NA),
+                         encoding = "UTF-8")
+
+# Reading the shapefile of the Brazilian terrestrial territory
+br <- readOGR("shapefiles/BR/BR_UF_2020.shp")
+grids_br <- readOGR("shapefiles/grids_br/grids_br.shp") 
+
+# Projecting
+crswgs84 <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs") # EPSG:4326 - WGS 84
+br <- spTransform(br, crswgs84)
+
+# Intersecting coordinates with the grid cells
+coords <- mimosa_clean
+coordinates(coords) <- ~ longitude + latitude
+proj4string(coords) <- crswgs84
+coords <- over(coords, grids_br)
+mimosa_clean$id_grid <- coords$id
+mimosa_clean <- mimosa_clean %>% filter(!is.na(id_grid))
+coordinates(mimosa_clean) <- ~ longitude + latitude
+proj4string(mimosa_clean) <- crswgs84
+
+# Writing *.csv for subsequent analyses 
+write.csv(mimosa_clean, file = "datasets/mimosa-clean.csv", row.names = F,
+          fileEncoding = "UTF-8")
