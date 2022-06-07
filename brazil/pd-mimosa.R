@@ -25,6 +25,13 @@ library(viridis)
 library(tidyverse)
 library(rgdal)
 library(ape)
+library(raster)
+
+# Set wd (Yago)
+setwd("B:/yagob/GoogleDrive/Academia/Parallel_projects/Mimosa_occurrence")
+
+# Set wd (Monique)
+setwd("G:/.shortcut-targets-by-id/19Bt9xRgbQsy9ySW31FgR7E5aEscE0jKG/Mimosa_occurrence")
 
 #=====================================================================================================#
 
@@ -44,13 +51,16 @@ grids_br <- readOGR("shapefiles/grids_br/grids_br.shp")
 # Reading shapefile: Brazilian terrestrial territory
 br <- readOGR("shapefiles/BR/BR_UF_2020.shp")
 
+# Reading shapefile: biomes
+biomes <- readOGR("shapefiles/biomes/bioma_1milhao_uf2015_250mil_IBGE_albers_v4_revisao_pampa_lagoas.shp")
+
 #=====================================================================================================#
 
 #====#
 # PD #
 #====#
 
-# Removing species that do not occur in the tree from the matrix
+# Removing from the matrix species that do not occur in the tree 
 mimosa_matrix <- mimosa_matrix[ , colnames(mimosa_matrix) %in% mimosa_tree$tip.label]
 
 # Setting seed and running a phylogenetic diversity analysis
@@ -65,6 +75,9 @@ pd_stats$residuals <- lm(pd.obs ~ ntaxa, pd_stats)$res
 
 # Saving results as *.csv
 write.csv(pd_stats, "datasets/mimosa_pd.csv", row.names = TRUE)
+
+# Loading results
+pd_stats <- read.csv("datasets/mimosa_pd.csv", row.names = 1)
 
 # Assigning results for each grid cell by merging results and a spatial polygon
 pd_poly <- merge(grids_br, pd_stats, by.x = "id")
@@ -101,6 +114,7 @@ pd_poly$significance <- factor(pd_poly$significance, levels = c("<= 0.01",
 # We can define label limits using the range of each attribute
 summary(pd_poly@data)
 
+# We must know the extent of the pd_poly object in order to define plot limits
 extent(pd_poly)
 
 # Phylogenetic diversty
@@ -110,8 +124,8 @@ pd_plot <- spplot(pd_poly,
                   par.settings = list(fontsize = list(text = 21)),
                   at = seq(0, 0.336, length.out = 16),
                   colorkey = TRUE, 
-                  sp.layout = list(list(br, fill = "gray")), 
-                  col.regions = rev(magma(16)), 
+                  sp.layout = list(br, fill = "gray90", lwd = 1), 
+                  col.regions = makeTransparent(rev(magma(16)), alpha = 0.85), 
                   scales = list(draw = FALSE))
 
 # Species richness
@@ -121,8 +135,8 @@ sr_plot <- spplot(pd_poly,
                   par.settings = list(fontsize = list(text = 21)),
                   at = seq(0, 55, length.out = 16),
                   colorkey = TRUE, 
-                  sp.layout = list(list(br, fill = "gray")), 
-                  col.regions = rev(magma(16)), 
+                  sp.layout = list(list(br, fill = "gray90")), 
+                  col.regions = makeTransparent(rev(magma(16)), alpha = 0.85), 
                   scales = list(draw = FALSE))
 
 # Correlation: phylogenetic diversity and species richness
@@ -139,12 +153,12 @@ corPdsr_plot <- ggplot(data = pd_stats, mapping = aes(jitter(ntaxa), pd.obs))+
 # Standardized effect size
 pdses_plot <- spplot(pd_poly,
                      zcol = "pd.obs.z",
-                     xlim = c(-50.5, -38.5), ylim = c(-23.25, -8.5),
+                     xlim = c(-73.99045 , -28.99045), ylim = c(-33.72816 , 5.271841),
                      par.settings = list(fontsize = list(text = 21)),
-                     at = seq(-3.661, 3.67, length.out = 16),
+                     at = seq(-5.21, 3.36, length.out = 16),
                      colorkey = TRUE, 
-                     sp.layout = list(list(br, fill = "gray")), 
-                     col.regions = viridis(16), 
+                     sp.layout = list(list(br, fill = "gray90")), 
+                     col.regions = makeTransparent(viridis(16), alpha = 0.85), 
                      scales = list(draw = FALSE))
 
 # Residual values
@@ -194,7 +208,7 @@ pdP_plot <- spplot(pd_poly,
                    zcol = "significance", 
                    xlim = c(-73.99045 , -28.99045), ylim = c(-33.72816 , 5.271841),
                    colorkey = TRUE, 
-                   sp.layout = list(list(br, fill = "gray")), 
+                   sp.layout = list(list(biomes, fill = "gray90")), 
                    col.regions = c("firebrick4",
                                    "firebrick3",
                                     makeTransparent("khaki1", alpha = 0.5),
