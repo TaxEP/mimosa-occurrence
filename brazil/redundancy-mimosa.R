@@ -25,9 +25,12 @@ mimosa_clean$gen_sp <- gsub(" ", "_", mimosa_clean$gen_sp)
 # Reading shapefile
 biomes <- readOGR("shapefiles/biomes/bioma_1milhao_uf2015_250mil_IBGE_albers_v4_revisao_pampa_lagoas.shp")
 
+grids_br <- readOGR("shapefiles/grids_br/grids_br.shp")
+
 #Projecting
 crswgs84 <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
 biomes <- spTransform(biomes, crswgs84)
+grids_br <- spTransform(grids_br, crswgs84)
 
 #=====================================================================================================#
 
@@ -49,11 +52,11 @@ for(j in 1:length(size)){
   coords <- mimosa_clean 
   coordinates(coords) <- ~ longitude + latitude
   proj4string(coords) <- crswgs84
-  coords_2 <- over(coords, biomes)
+  coords_2 <- over(coords, grids_br)
   coords_2$id_2 <- 1:nrow(coords_2)
   coords <- mimosa_clean
   coords$id_2 <- 1:nrow(coords)
-  coords_2 <- coords_2 %>% filter(!is.na(ID))
+  coords_2 <- coords_2 %>% filter(!is.na(id))
   coords <- coords %>% filter(id_2 %in% coords_2$id_2)
   coords_2 <- coords 
   coordinates(coords_2) <- ~ longitude + latitude
