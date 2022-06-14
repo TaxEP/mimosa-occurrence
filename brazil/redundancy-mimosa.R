@@ -22,15 +22,12 @@ mimosa_clean <- read.csv(file = "datasets/mimosa-clean.csv", na.strings = c("", 
 # Standardizing gen_sp column 
 mimosa_clean$gen_sp <- gsub(" ", "_", mimosa_clean$gen_sp)
 
-# Reading shapefile
-biomes <- readOGR("shapefiles/biomes/bioma_1milhao_uf2015_250mil_IBGE_albers_v4_revisao_pampa_lagoas.shp")
+# Reading the shapefile of the Brazilian terrestrial territory
+br <- readOGR("shapefiles/BR/BR_UF_2020.shp")
 
-grids_br <- readOGR("shapefiles/grids_br/grids_br.shp")
-
-#Projecting
-crswgs84 <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
-biomes <- spTransform(biomes, crswgs84)
-grids_br <- spTransform(grids_br, crswgs84)
+# Projecting
+crswgs84 <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs") # EPSG:4326 - WGS 84
+br <- spTransform(br, crswgs84)
 
 #=====================================================================================================#
 
@@ -42,17 +39,17 @@ size <- seq(0.1, 5, 0.1)
 red_median <- NULL
 red_mean <- NULL
 for(j in 1:length(size)){
-  grid <- raster(extent(biomes), resolution = c(size[j], size[j]), crs = proj4string(biomes))
+  grid <- raster(extent(br), resolution = c(size[j], size[j]), crs = proj4string(br))
   gridPolygon <- rasterToPolygons(grid)
   gridPolygon$id <- 1:nrow(gridPolygon)
-  intersectGridClipped <- raster::intersect(gridPolygon, biomes)
+  intersectGridClipped <- raster::intersect(gridPolygon, br)
   intersectGrid <- gridPolygon[gridPolygon$id %in% intersectGridClipped$id, ]
   
-  #Intersecting coordinates with the biomes shapefile and, then, with the spatial grids 
+  #Intersecting coordinates with the grid shapefile and, then, with the spatial grids 
   coords <- mimosa_clean 
   coordinates(coords) <- ~ longitude + latitude
   proj4string(coords) <- crswgs84
-  coords_2 <- over(coords, grids_br)
+  coords_2 <- over(coords, intersectGrid)
   coords_2$id_2 <- 1:nrow(coords_2)
   coords <- mimosa_clean
   coords$id_2 <- 1:nrow(coords)
@@ -93,7 +90,7 @@ for(j in 1:length(size)){
 redundancy <- data.frame("grid_size" = size, "median" = red_median, "mean" = red_mean)
 
 #Saving results
-#write.csv(file = "results/Mimosa/redundancy.csv", redundancy, row.names = FALSE)
+write.csv(file = "results/redundancy.csv", redundancy, row.names = FALSE)
 
 rm(list = ls()[-which(ls() == "redundancy")])
 
