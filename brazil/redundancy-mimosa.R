@@ -97,7 +97,7 @@ rm(list = ls()[-which(ls() == "redundancy")])
 #=====================================================================================================#
 
 #Loading results
-redundancy <- read.csv("results/Mimosa/redundancy.csv")
+redundancy <- read.csv("results/redundancy.csv")
 
 #=========#
 # FIGURES #
@@ -109,9 +109,9 @@ library(ggplot2)
 redMedian_plot <- ggplot(data = redundancy, mapping = aes(x = grid_size, y = median)) + 
   geom_point() +
   #geom_point(data=redundancy[which(redundancy$grid_size == 0.6), ], aes(x=grid_size, y=median), colour="red", size=5)+
-  geom_segment(data = redundancy[which(redundancy$grid_size == 0.6), ], aes(xend=grid_size), yend=-1,  #alpha = 0.5,
+  geom_segment(data = redundancy[which(redundancy$grid_size == 1), ], aes(xend=grid_size), yend=-1,  #alpha = 0.5,
                linetype = "dashed") +
-  geom_segment(data = redundancy[which(redundancy$grid_size == 0.6), ], aes(yend=median), xend=-1, #alpha = 0.5,
+  geom_segment(data = redundancy[which(redundancy$grid_size == 1), ], aes(yend=median), xend=-1, #alpha = 0.5,
                linetype = "dashed") +
   labs(title = "Mimosa")+
   labs(y= "Redundancy", x = "Grid resolution")+
