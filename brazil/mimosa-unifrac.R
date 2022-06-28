@@ -66,7 +66,7 @@ mimosa_matrix <- mimosa_matrix[which(rowSums(mimosa_matrix) > 0), ]
 #============#
 
 #Loading grids and, the Brazilian terrestrial territory and the biomes
-grids_br <- readOGR("shapefiles/grids_br/grids_br.shp") 
+grids_br <- readOGR("shapefiles/grids_br2/grids_br2.shp") 
 br <- readOGR("shapefiles/BR/BR_UF_2020.shp")
 biomes <- readOGR("shapefiles/biomes/bioma_1milhao_uf2015_250mil_IBGE_albers_v4_revisao_pampa_lagoas.shp")
 
@@ -122,7 +122,7 @@ text(hc$height,
 #====================#
 
 # Number of clusters
-ncluster <- 8
+ncluster <- 10
 dend <- as.dendrogram(hc) 
 
 # Defining colors

@@ -16,7 +16,7 @@ setwd("G:/.shortcut-targets-by-id/19Bt9xRgbQsy9ySW31FgR7E5aEscE0jKG/Mimosa_occur
 #=======#
 
 # Reading occurrence dataset
-mimosa_br <- read.csv("datasets/mimosa-clean.csv", na.strings = c("", NA))
+mimosa_br <- read.csv("datasets/mimosa-clean2.csv", na.strings = c("", NA))
 
 # Reading tree
 mimosa_tree <- read.tree("trees/mimosa_clean-VASCONCELOS2020.txt")

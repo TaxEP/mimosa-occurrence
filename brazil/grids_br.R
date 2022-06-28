@@ -12,7 +12,7 @@ setwd("G:/.shortcut-targets-by-id/19Bt9xRgbQsy9ySW31FgR7E5aEscE0jKG/Mimosa_occur
 #======================================================================================================#
 
 # Defining grid cells' size
-grids_size <- c(1, 1)
+grids_size <- c(3, 3)
 
 # Reading the shapefile of the Brazilian terrestrial territory
 br <- readOGR("shapefiles/BR/BR_UF_2020.shp")
@@ -29,4 +29,4 @@ intersectGridClipped <- raster::intersect(gridPolygon, br)
 intersectGrid <- gridPolygon[gridPolygon$id %in% intersectGridClipped$id, ]
 
 # Saving spatial grids in a shapefile
-writeOGR(intersectGrid, ".", "shapefiles/grids_br/grids_br", driver="ESRI Shapefile")
+writeOGR(intersectGrid, ".", "shapefiles/grids_br2/grids_br2", driver="ESRI Shapefile")
