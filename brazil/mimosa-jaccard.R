@@ -97,7 +97,7 @@ text(hc$height,
      cex = 0.5)
 
 #====================#
-# Dendogram and plot #
+# Dendrogram and plot #
 #====================#
 
 #Number of clusters
@@ -148,7 +148,7 @@ jaccard_plot <- spplot(jaccard_poly,
                        zcol = "cluster_membership", 
                        xlim = c(-73.99045 , -28.99045), ylim = c(-33.72816 , 5.271841), 
                        colorkey = TRUE, 
-                       sp.layout = list(list(br, fill = "gray")), 
+                       sp.layout = list(list(br, fill = "gray90")), 
                        col.regions = colors[1:length(levels(jaccard_poly$cluster_membership))], 
                        scales = list(draw = FALSE))
 
