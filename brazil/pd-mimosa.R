@@ -124,7 +124,7 @@ pd_plot <- spplot(pd_poly,
                   par.settings = list(fontsize = list(text = 21)),
                   at = seq(0, 0.336, length.out = 16),
                   colorkey = TRUE, 
-                  sp.layout = list(br, fill = "gray90", lwd = 1), 
+                  sp.layout = list(biomes, fill = "gray90", lwd = 2), 
                   col.regions = makeTransparent(rev(magma(16)), alpha = 0.85), 
                   scales = list(draw = FALSE))
 
@@ -135,7 +135,7 @@ sr_plot <- spplot(pd_poly,
                   par.settings = list(fontsize = list(text = 21)),
                   at = seq(0, 55, length.out = 16),
                   colorkey = TRUE, 
-                  sp.layout = list(list(br, fill = "gray90")), 
+                  sp.layout = list(list(biomes, fill = "gray90", lwd = 2)), 
                   col.regions = makeTransparent(rev(magma(16)), alpha = 0.85), 
                   scales = list(draw = FALSE))
 
@@ -157,7 +157,7 @@ pdses_plot <- spplot(pd_poly,
                      par.settings = list(fontsize = list(text = 21)),
                      at = seq(-5.21, 3.36, length.out = 16),
                      colorkey = TRUE, 
-                     sp.layout = list(list(br, fill = "gray90")), 
+                     sp.layout = list(list(biomes, fill = "gray90")), 
                      col.regions = makeTransparent(viridis(16), alpha = 0.85), 
                      scales = list(draw = FALSE))
 
