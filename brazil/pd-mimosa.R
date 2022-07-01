@@ -150,7 +150,11 @@ corPdsr_plot <- ggplot(data = pd_stats, mapping = aes(jitter(ntaxa), pd.obs))+
   theme_bw(base_size = 14)+
   theme(plot.title = element_text(face = "italic"))
 
+
 # Standardized effect size
+cols_ses <- c(viridis(16)[1:12],
+              "khaki1",
+              rev(heat.colors(12)[1:6]))
 pdses_plot <- spplot(pd_poly,
                      zcol = "pd.obs.z",
                      xlim = c(-73.99045 , -28.99045), ylim = c(-33.72816 , 5.271841),
@@ -158,50 +162,53 @@ pdses_plot <- spplot(pd_poly,
                      at = seq(-5.21, 3.36, length.out = 16),
                      colorkey = TRUE, 
                      sp.layout = list(list(biomes, fill = "gray90")), 
-                     col.regions = makeTransparent(viridis(16), alpha = 0.85), 
+                     col.regions = cols_ses, 
                      scales = list(draw = FALSE))
 
+#Removing outliers: SES
+sort(pd_poly$pd.obs.z)
+cols_sesout <- c(viridis(16)[1:10],
+                 "khaki1",
+                 rev(heat.colors(16)[1:8]))
+pdsesout_plot <- spplot(pd_poly,
+                     zcol = "pd.obs.z",
+                     xlim = c(-73.99045 , -28.99045), ylim = c(-33.72816 , 5.271841),
+                     par.settings = list(fontsize = list(text = 21)),
+                     at = seq(-3.85, 3.36, length.out = 16),
+                     colorkey = TRUE, 
+                     sp.layout = list(list(biomes, fill = "gray90")), 
+                     col.regions = cols_sesout, 
+                     scales = list(draw = FALSE))
+
+
 # Residual values
+cols_res <- c(viridis(20)[1:14], 
+              "khaki1",
+              rev(heat.colors(10)[1:4]))
 pdres_plot <- spplot(pd_poly,
                      zcol = "residuals",
                      xlim = c(-73.99045 , -28.99045), ylim = c(-33.72816 , 5.271841),
                      par.settings = list(fontsize = list(text = 21)),
-                     at = seq(-0.223, 0.223, length.out = 16),
+                     at = seq(-0.223, 0.077, length.out = 16),
                      colorkey = TRUE, 
-                     sp.layout = list(list(br, fill = "gray")), 
-                     col.regions = c(viridis(16)[1:7], "khaki1", rev(heat.colors(16)[1:8])), 
+                     sp.layout = list(list(br, fill = "gray90")), 
+                     col.regions = cols_res, 
                      scales = list(draw = FALSE))
 
-cols3 <- c(viridis(16)[1], 
-           makeTransparent(viridis(16)[2], alpha = .9),
-           makeTransparent(viridis(16)[3], alpha = .8),
-           makeTransparent(viridis(16)[4], alpha = .7),
-           makeTransparent(viridis(16)[5], alpha = .6),
-           makeTransparent(viridis(16)[6], alpha = .6),
-           makeTransparent(viridis(16)[7], alpha = .6),
-           makeTransparent(viridis(16)[8], alpha = .6),
-           makeTransparent(viridis(16)[9], alpha = .6),
-           makeTransparent(viridis(16)[10], alpha = .5),
-           makeTransparent(viridis(16)[11], alpha = .5),
-           makeTransparent(viridis(16)[12], alpha = .5),
-           makeTransparent(viridis(16)[13], alpha = .5),
-           makeTransparent(viridis(16)[14], alpha = .5),
-           makeTransparent(viridis(16)[15], alpha = .5),
-           makeTransparent("khaki1"),
-           makeTransparent(rev(heat.colors(16)[5]), alpha = .6),
-           makeTransparent(rev(heat.colors(16)[4]), alpha = .7),
-           makeTransparent(rev(heat.colors(16)[3]), alpha = .8),
-           makeTransparent(rev(heat.colors(16)[2]), alpha = .9),
-           rev(heat.colors(16)[1]))
-
-pdres_plot2 <- spplot(pd_poly,
-                      zcol = "residuals",
-                      xlim = c(-73.99045 , -28.99045), ylim = c(-33.72816 , 5.271841),
-                      at = seq(-0.223, 0.077, length.out = 22),
-                      par.settings=list(fontsize = list(text = 22)),
-                      colorkey = TRUE, sp.layout = list(list(br, 
-                                                             fill = "gray90")), 
-                      col.regions = cols3, scales = list(draw = FALSE))
+# Removing outliers: Residuals
+sort(pd_poly$residuals)
+cols_resout <- c(viridis(16)[1:10], 
+              "khaki1",
+              rev(heat.colors(10)[1:6]))
+pdresout_plot <- spplot(pd_poly,
+                     zcol = "residuals",
+                     xlim = c(-73.99045 , -28.99045), ylim = c(-33.72816 , 5.271841),
+                     par.settings = list(fontsize = list(text = 21)),
+                     at = seq(-0.123, 0.077, length.out = 16),
+                     colorkey = TRUE, 
+                     sp.layout = list(list(br, fill = "gray90")), 
+                     col.regions = cols_resout, 
+                     scales = list(draw = FALSE))
 
 #PD statistical significance
 pdP_plot <- spplot(pd_poly,  
