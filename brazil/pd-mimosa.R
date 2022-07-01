@@ -190,7 +190,7 @@ pdres_plot <- spplot(pd_poly,
                      par.settings = list(fontsize = list(text = 21)),
                      at = seq(-0.223, 0.077, length.out = 16),
                      colorkey = TRUE, 
-                     sp.layout = list(list(br, fill = "gray90")), 
+                     sp.layout = list(list(biomes, fill = "gray90")), 
                      col.regions = cols_res, 
                      scales = list(draw = FALSE))
 
@@ -205,7 +205,7 @@ pdresout_plot <- spplot(pd_poly,
                      par.settings = list(fontsize = list(text = 21)),
                      at = seq(-0.123, 0.077, length.out = 16),
                      colorkey = TRUE, 
-                     sp.layout = list(list(br, fill = "gray90")), 
+                     sp.layout = list(list(biomes, fill = "gray90")), 
                      col.regions = cols_resout, 
                      scales = list(draw = FALSE))
 
