@@ -1,3 +1,15 @@
+# Function to get equivalent color with different transparency
+makeTransparent = function(..., alpha=0.5) {
+  if(alpha<0 | alpha>1) stop("alpha must be between 0 and 1")
+  alpha = floor(255*alpha)  
+  newColor = col2rgb(col=unlist(list(...)), alpha=FALSE)
+  .makeTransparent = function(col, alpha) {
+    rgb(red=col[1], green=col[2], blue=col[3], alpha=alpha, maxColorValue=255)
+  }
+  newColor = apply(newColor, 2, .makeTransparent, alpha=alpha)
+  return(newColor)
+} 
+
 #=====================================================================================================#
 
 library(rgdal)
@@ -29,7 +41,7 @@ mimosa_tree <- read.nexus("trees/mimosa-pruned_tree.nex")
 #==========#
 
 # Loading matrix
-mimosa_matrix <- read.csv(file = "datasets/mimosa_matrix.csv", row.names = 1)
+mimosa_matrix <- read.csv(file = "datasets/mimosa_matrix3.csv", row.names = 1)
 
 # Removing taxa that only have one recorded presence
 mimosa_matrix <- mimosa_matrix[ , which(colSums(mimosa_matrix) > 1)]
@@ -45,7 +57,7 @@ mimosa_matrix <- mimosa_matrix[which(rowSums(mimosa_matrix) > 0), ]
 #============#
 
 #Loading grids and, the Brazilian terrestrial territory and the biomes
-grids_br <- readOGR("shapefiles/grids_br2/grids_br2.shp") 
+grids_br <- readOGR("shapefiles/grids_br3/grids_br3.shp") 
 br <- readOGR("shapefiles/BR/BR_UF_2020.shp")
 biomes <- readOGR("shapefiles/biomes/bioma_1milhao_uf2015_250mil_IBGE_albers_v4_revisao_pampa_lagoas.shp")
 
@@ -105,7 +117,7 @@ ncluster <- 10
 dend <- as.dendrogram(hc) 
 
 #Defining colors
-colors <- c("#41D91E", 
+colors <- makeTransparent(c("#41D91E", 
             "#FB9A99",
             "#003200",
             "#008805",
@@ -118,7 +130,7 @@ colors <- c("#41D91E",
             "#FFFF99",
             "#0000A3",
             "#FAD900",
-            "#B15928")
+            "#B15928"), alpha = 0.8)
 
 #Coloring clusters in the dendogram
 dend <- color_branches(dend, k = ncluster, col = colors[1:ncluster])
@@ -148,10 +160,30 @@ jaccard_plot <- spplot(jaccard_poly,
                        zcol = "cluster_membership", 
                        xlim = c(-73.99045 , -28.99045), ylim = c(-33.72816 , 5.271841), 
                        colorkey = TRUE, 
-                       sp.layout = list(list(br, fill = "gray90")), 
+                       sp.layout = list(list(biomes, fill = "gray90")), 
                        col.regions = colors[1:length(levels(jaccard_poly$cluster_membership))], 
                        scales = list(draw = FALSE))
 
-# Dendogram
+# Coloring dendrogram without transparency
+colors_dend <- c("#41D91E", 
+                 "#FB9A99",
+                 "#003200",
+                 "#008805",
+                 "#E300F7",
+                 "#FFB559",
+                 "#FF0005",
+                 "#FF7F00",
+                 "#6A3D9A",
+                 "#1F78B4",
+                 "#FFFF99",
+                 "#0000A3",
+                 "#FAD900",
+                 "#B15928")
+
+dend <- as.dendrogram(hc) 
+dend <- color_branches(dend, k = ncluster, col = colors_dend[1:ncluster])
+
+# Dendrogram
 labels(dend) <- NULL
-dend <- assign_values_to_branches_edgePar(dend = dend, value = 1, edgePar = "lwd")
+dend <- assign_values_to_branches_edgePar(dend = dend, value = 3, edgePar = "lwd")
+plot_horiz.dendrogram(dend, axes = F)

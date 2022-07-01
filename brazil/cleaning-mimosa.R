@@ -1026,7 +1026,7 @@ mimosa_clean <- read.csv(file = "datasets/mimosa-clean.csv", na.strings = c("", 
 
 # Reading the shapefile of the Brazilian terrestrial territory
 br <- readOGR("shapefiles/BR/BR_UF_2020.shp")
-grids_br <- readOGR("shapefiles/grids_br2/grids_br2.shp") 
+grids_br <- readOGR("shapefiles/grids_br3/grids_br3.shp") 
 
 # Projecting
 crswgs84 <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs") # EPSG:4326 - WGS 84
@@ -1043,5 +1043,5 @@ coordinates(mimosa_clean) <- ~ longitude + latitude
 proj4string(mimosa_clean) <- crswgs84
 
 # Writing *.csv for subsequent analyses 
-write.csv(mimosa_clean, file = "datasets/mimosa-clean2.csv", row.names = F,
+write.csv(mimosa_clean, file = "datasets/mimosa-clean3.csv", row.names = F,
           fileEncoding = "UTF-8")

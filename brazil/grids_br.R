@@ -29,4 +29,4 @@ intersectGridClipped <- raster::intersect(gridPolygon, br)
 intersectGrid <- gridPolygon[gridPolygon$id %in% intersectGridClipped$id, ]
 
 # Saving spatial grids in a shapefile
-writeOGR(intersectGrid, ".", "shapefiles/grids_br2/grids_br2", driver="ESRI Shapefile")
+writeOGR(intersectGrid, ".", "shapefiles/grids_br3/grids_br3", driver="ESRI Shapefile")
