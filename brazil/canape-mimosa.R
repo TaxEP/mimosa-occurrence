@@ -25,7 +25,14 @@ library(viridis)
 library(tidyverse)
 library(rgdal)
 library(ape)
+library(raster)
 library(PDcalc) #https://rdrr.io/github/davidnipperess/PDcalc/man/phyloendemism.html
+
+# Set wd (Yago)
+setwd("B:/yagob/GoogleDrive/Academia/Parallel_projects/Mimosa_occurrence")
+
+# Set wd (Monique)
+setwd("G:/.shortcut-targets-by-id/19Bt9xRgbQsy9ySW31FgR7E5aEscE0jKG/Mimosa_occurrence")
 
 #=====================================================================================================#
 
@@ -212,7 +219,7 @@ extent(canape_poly)
 
 # CANAPE
 canape_plot <- spplot(canape_poly, zcol = "results", colorkey = TRUE, 
-                      sp.layout = list(list(biomes, fill = "gray")), 
+                      sp.layout = list(list(biomes, fill = "gray90")), 
                       xlim = c(-73.99, -28.99), ylim = c(-33.72, 5.27),
                       col.regions =  c("#231151FF",
                                        "#B63679FF",

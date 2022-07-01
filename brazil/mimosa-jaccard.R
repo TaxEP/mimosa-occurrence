@@ -105,7 +105,7 @@ ncluster <- 10
 dend <- as.dendrogram(hc) 
 
 #Defining colors
-colors <- c("#41D91E", 
+colors <- makeTransparent(c("#41D91E", 
             "#FB9A99",
             "#003200",
             "#008805",
@@ -118,7 +118,7 @@ colors <- c("#41D91E",
             "#FFFF99",
             "#0000A3",
             "#FAD900",
-            "#B15928")
+            "#B15928"), alpha = 0.7)
 
 #Coloring clusters in the dendogram
 dend <- color_branches(dend, k = ncluster, col = colors[1:ncluster])
@@ -148,10 +148,30 @@ jaccard_plot <- spplot(jaccard_poly,
                        zcol = "cluster_membership", 
                        xlim = c(-73.99045 , -28.99045), ylim = c(-33.72816 , 5.271841), 
                        colorkey = TRUE, 
-                       sp.layout = list(list(br, fill = "gray90")), 
+                       sp.layout = list(list(biomes, fill = "gray90")), 
                        col.regions = colors[1:length(levels(jaccard_poly$cluster_membership))], 
                        scales = list(draw = FALSE))
+
+# Coloring the dendrogram without transparency
+dend_colors <- c("#41D91E", 
+                 "#FB9A99",
+                 "#003200",
+                 "#008805",
+                 "#E300F7",
+                 "#FFB559",
+                 "#FF0005",
+                 "#FF7F00",
+                 "#6A3D9A",
+                 "#1F78B4",
+                 "#FFFF99",
+                 "#0000A3",
+                 "#FAD900",
+                 "#B15928")
+dend <- as.dendrogram(hc) 
+dend <- color_branches(dend, k = ncluster, col = dend_colors[1:ncluster])
 
 # Dendogram
 labels(dend) <- NULL
 dend <- assign_values_to_branches_edgePar(dend = dend, value = 1, edgePar = "lwd")
+plot_horiz.dendrogram(dend, axes = F)
+

@@ -39,7 +39,7 @@ setwd("G:/.shortcut-targets-by-id/19Bt9xRgbQsy9ySW31FgR7E5aEscE0jKG/Mimosa_occur
 #=======#
 
 #======#
-# TREE #
+# Tree #
 #======#
 
 # Reading tree
@@ -195,4 +195,5 @@ dend <- color_branches(dend, k = ncluster, col = dend_colors[1:ncluster])
 
 # Dendogram
 labels(dend) <- NULL
-dend <- assign_values_to_branches_edgePar(dend = dend, value = 4, edgePar = "lwd")
+dend <- assign_values_to_branches_edgePar(dend = dend, value = 2, edgePar = "lwd")
+plot_horiz.dendrogram(dend, axes = F)

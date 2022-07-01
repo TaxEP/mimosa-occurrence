@@ -174,12 +174,11 @@ pdsesout_plot <- spplot(pd_poly,
                      zcol = "pd.obs.z",
                      xlim = c(-73.99045 , -28.99045), ylim = c(-33.72816 , 5.271841),
                      par.settings = list(fontsize = list(text = 21)),
-                     at = seq(-3.85, 3.36, length.out = 16),
+                     at = seq(-3.85, 3.36, length.out = 19),
                      colorkey = TRUE, 
                      sp.layout = list(list(biomes, fill = "gray90")), 
                      col.regions = cols_sesout, 
                      scales = list(draw = FALSE))
-
 
 # Residual values
 cols_res <- c(viridis(20)[1:14], 
