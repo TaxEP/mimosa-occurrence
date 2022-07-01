@@ -20,12 +20,19 @@ show_col(c("#231151FF",
 
 #=====================================================================================================#
 
+library(raster)
 library(picante)
 library(viridis)
 library(tidyverse)
 library(rgdal)
 library(ape)
 library(PDcalc) #https://rdrr.io/github/davidnipperess/PDcalc/man/phyloendemism.html
+
+# Set wd (Yago)
+setwd("B:/yagob/GoogleDrive/Academia/Parallel_projects/Mimosa_occurrence")
+
+# Set wd (Monique)
+setwd("G:/.shortcut-targets-by-id/19Bt9xRgbQsy9ySW31FgR7E5aEscE0jKG/Mimosa_occurrence")
 
 #=====================================================================================================#
 
@@ -34,13 +41,13 @@ library(PDcalc) #https://rdrr.io/github/davidnipperess/PDcalc/man/phyloendemism.
 #=======#
 
 # Reading matrix
-mimosa_matrix <- read.csv(file = "datasets/mimosa_matrix.csv", row.names = 1)
+mimosa_matrix <- read.csv(file = "datasets/mimosa_matrix3.csv", row.names = 1)
 
 # Reading tree
-mimosa_tree <- read.nexus("trees/mimosa-pruned_tree.nex")
+mimosa_tree <- read.nexus("trees/mimosa-pruned_tree3.nex")
 
 # Reading grids
-grids_br <- readOGR("shapefiles/grids_br/grids_br.shp") 
+grids_br <- readOGR("shapefiles/grids_br3/grids_br3.shp") 
 
 # Reading shapefile: Brazilian terrestrial territory
 br <- readOGR("shapefiles/BR/BR_UF_2020.shp")
