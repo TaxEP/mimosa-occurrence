@@ -293,21 +293,13 @@ mimosa_coordFlagged <- mimosa %>% clean_coordinates(lon = "longitude",
                                                                   "zeros"))
 
 invalid_coords <- mimosa[mimosa_coordFlagged == FALSE, ] # subsetting flagged records
-mimosa_coordClean <- mimosa[mimosa_coordFlagged  == TRUE, ] # subsetting valid records
-
-# Writing *.csv for subsequent analyses 
-write.csv(mimosa_coordClean, file = "datasets/mimosa-clean.csv", row.names = F,
-          fileEncoding = "UTF-8")
+mimosa_clean <- mimosa[mimosa_coordFlagged  == TRUE, ] # subsetting valid records
 
 #======================================================================================#
 
 #============================#
 # PREPARING FOR THE ANALYSES #
 #============================#
-
-# Reading the dataset
-mimosa_clean <- read.csv(file = "datasets/mimosa-clean.csv", na.strings = c("", NA),
-                         encoding = "UTF-8")
 
 # Reading the shapefile of the Brazilian terrestrial territory
 br <- readOGR("shapefiles/BR/BR_UF_2020.shp")
@@ -328,5 +320,5 @@ coordinates(mimosa_clean) <- ~ longitude + latitude
 proj4string(mimosa_clean) <- crswgs84
 
 # Writing *.csv for subsequent analyses 
-write.csv(mimosa_clean, file = "datasets/mimosa-clean.csv", row.names = F,
+write.csv(mimosa_clean, file = "datasets/mimosa-clean2.csv", row.names = F,
           fileEncoding = "UTF-8")
