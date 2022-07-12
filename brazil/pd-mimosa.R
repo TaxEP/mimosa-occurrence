@@ -40,10 +40,10 @@ setwd("G:/.shortcut-targets-by-id/19Bt9xRgbQsy9ySW31FgR7E5aEscE0jKG/Mimosa_occur
 #=======#
 
 # Reading presence-absence matrix
-mimosa_matrix <- read.csv(file = "datasets/mimosa_matrix.csv", row.names = 1)
+mimosa_matrix <- read.csv(file = "datasets/mimosa_matrix2.csv", row.names = 1)
 
 # Reading tree
-mimosa_tree <- read.nexus("trees/mimosa-pruned_tree.nex")
+mimosa_tree <- read.nexus("trees/mimosa-pruned_tree2.nex")
 
 # Reading grid cells
 grids_br <- readOGR("shapefiles/grids_br/grids_br.shp") 
@@ -74,10 +74,10 @@ pd_stats$id <- rownames(pd_stats)
 pd_stats$residuals <- lm(pd.obs ~ ntaxa, pd_stats)$res
 
 # Saving results as *.csv
-write.csv(pd_stats, "datasets/mimosa_pd.csv", row.names = TRUE)
+#write.csv(pd_stats, "datasets/mimosa_pd2.csv", row.names = TRUE)
 
 # Loading results
-pd_stats <- read.csv("datasets/mimosa_pd.csv", row.names = 1)
+pd_stats <- read.csv("datasets/mimosa_pd2.csv", row.names = 1)
 
 # Assigning results for each grid cell by merging results and a spatial polygon
 pd_poly <- merge(grids_br, pd_stats, by.x = "id")
@@ -122,7 +122,7 @@ pd_plot <- spplot(pd_poly,
                   zcol = "pd.obs",
                   xlim = c(-73.99045 , -28.99045), ylim = c(-33.72816 , 5.271841),
                   par.settings = list(fontsize = list(text = 21)),
-                  at = seq(0, 0.336, length.out = 16),
+                  at = seq(0, 0.345, length.out = 16),
                   colorkey = TRUE, 
                   sp.layout = list(biomes, fill = "gray90", lwd = 2), 
                   col.regions = makeTransparent(rev(magma(16)), alpha = 0.85), 
@@ -133,7 +133,7 @@ sr_plot <- spplot(pd_poly,
                   zcol = "ntaxa", 
                   xlim = c(-73.99045 , -28.99045), ylim = c(-33.72816 , 5.271841),
                   par.settings = list(fontsize = list(text = 21)),
-                  at = seq(0, 55, length.out = 16),
+                  at = seq(0, 57, length.out = 16),
                   colorkey = TRUE, 
                   sp.layout = list(list(biomes, fill = "gray90", lwd = 2)), 
                   col.regions = makeTransparent(rev(magma(16)), alpha = 0.85), 
@@ -159,13 +159,13 @@ pdses_plot <- spplot(pd_poly,
                      zcol = "pd.obs.z",
                      xlim = c(-73.99045 , -28.99045), ylim = c(-33.72816 , 5.271841),
                      par.settings = list(fontsize = list(text = 21)),
-                     at = seq(-5.21, 3.36, length.out = 16),
+                     at = seq(-5.70, 3.05, length.out = 16),
                      colorkey = TRUE, 
                      sp.layout = list(list(biomes, fill = "gray90")), 
                      col.regions = cols_ses, 
                      scales = list(draw = FALSE))
 
-#Removing outliers: SES
+# Removing outliers: SES
 sort(pd_poly$pd.obs.z)
 cols_sesout <- c(viridis(16)[1:10],
                  "khaki1",
@@ -209,7 +209,7 @@ pdresout_plot <- spplot(pd_poly,
                      col.regions = cols_resout, 
                      scales = list(draw = FALSE))
 
-#PD statistical significance
+# PD statistical significance
 pdP_plot <- spplot(pd_poly,  
                    zcol = "significance", 
                    xlim = c(-73.99045 , -28.99045), ylim = c(-33.72816 , 5.271841),

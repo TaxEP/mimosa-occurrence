@@ -16,7 +16,7 @@ setwd("G:/.shortcut-targets-by-id/19Bt9xRgbQsy9ySW31FgR7E5aEscE0jKG/Mimosa_occur
 #=======#
 
 # Reading occurrence dataset
-mimosa_br <- read.csv("datasets/mimosa-clean.csv", na.strings = c("", NA))
+mimosa_br <- read.csv("datasets/mimosa-clean2.csv", na.strings = c("", NA))
 
 # Reading tree
 mimosa_tree <- read.tree("trees/mimosa_clean-VASCONCELOS2020.txt")
@@ -81,7 +81,7 @@ for(i in 1:length(mimosa_pruned.tree$edge.length)){
 mimosa_pruned.tree$edge.length <- edge.l
 
 # Saving as *.nex
-write.nexus(mimosa_pruned.tree, file = "trees/mimosa-pruned_tree.nex")
+write.nexus(mimosa_pruned.tree, file = "trees/mimosa-pruned_tree2.nex")
 
 #=====================================================================================================#
 
@@ -106,4 +106,4 @@ for(i in 1:nrow(mimosa_matrix)){
 }
 
 # Saving matrix as *.csv
-write.csv(mimosa_matrix, "datasets/mimosa_matrix.csv", row.names = TRUE)
+write.csv(mimosa_matrix, "datasets/mimosa_matrix2.csv", row.names = TRUE)
