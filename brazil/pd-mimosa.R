@@ -117,7 +117,7 @@ summary(pd_poly@data)
 # We must know the extent of the pd_poly object in order to define plot limits
 extent(pd_poly)
 
-# Phylogenetic diversty
+# Phylogenetic diversity
 pd_plot <- spplot(pd_poly,
                   zcol = "pd.obs",
                   xlim = c(-73.99045 , -28.99045), ylim = c(-33.72816 , 5.271841),
@@ -152,9 +152,9 @@ corPdsr_plot <- ggplot(data = pd_stats, mapping = aes(jitter(ntaxa), pd.obs))+
 
 
 # Standardized effect size
-cols_ses <- c(viridis(16)[1:12],
+cols_ses <- makeTransparent(c(viridis(16)[1:12],
               "khaki1",
-              rev(heat.colors(12)[1:6]))
+              rev(heat.colors(12)[1:6])), alpha = 0.9)
 pdses_plot <- spplot(pd_poly,
                      zcol = "pd.obs.z",
                      xlim = c(-73.99045 , -28.99045), ylim = c(-33.72816 , 5.271841),
@@ -167,28 +167,28 @@ pdses_plot <- spplot(pd_poly,
 
 # Removing outliers: SES
 sort(pd_poly$pd.obs.z)
-cols_sesout <- c(viridis(16)[1:10],
+cols_sesout <- makeTransparent(c(viridis(16)[1:10],
                  "khaki1",
-                 rev(heat.colors(16)[1:8]))
+                 rev(heat.colors(16)[1:8])), alpha = 0.9)
 pdsesout_plot <- spplot(pd_poly,
                      zcol = "pd.obs.z",
                      xlim = c(-73.99045 , -28.99045), ylim = c(-33.72816 , 5.271841),
                      par.settings = list(fontsize = list(text = 21)),
-                     at = seq(-3.85, 3.36, length.out = 19),
+                     at = seq(-3.55, 3.05, length.out = 19),
                      colorkey = TRUE, 
                      sp.layout = list(list(biomes, fill = "gray90")), 
                      col.regions = cols_sesout, 
                      scales = list(draw = FALSE))
 
 # Residual values
-cols_res <- c(viridis(20)[1:14], 
+cols_res <- makeTransparent(c(viridis(20)[1:14], 
               "khaki1",
-              rev(heat.colors(10)[1:4]))
+              rev(heat.colors(10)[1:4])), alpha = 0.9)
 pdres_plot <- spplot(pd_poly,
                      zcol = "residuals",
                      xlim = c(-73.99045 , -28.99045), ylim = c(-33.72816 , 5.271841),
                      par.settings = list(fontsize = list(text = 21)),
-                     at = seq(-0.223, 0.077, length.out = 16),
+                     at = seq(-0.232, 0.071, length.out = 16),
                      colorkey = TRUE, 
                      sp.layout = list(list(biomes, fill = "gray90")), 
                      col.regions = cols_res, 
@@ -196,14 +196,14 @@ pdres_plot <- spplot(pd_poly,
 
 # Removing outliers: Residuals
 sort(pd_poly$residuals)
-cols_resout <- c(viridis(16)[1:10], 
+cols_resout <- makeTransparent(c(viridis(16)[1:10], 
               "khaki1",
-              rev(heat.colors(10)[1:6]))
+              rev(heat.colors(10)[1:6])), alpha = 0.9)
 pdresout_plot <- spplot(pd_poly,
                      zcol = "residuals",
                      xlim = c(-73.99045 , -28.99045), ylim = c(-33.72816 , 5.271841),
                      par.settings = list(fontsize = list(text = 21)),
-                     at = seq(-0.123, 0.077, length.out = 16),
+                     at = seq(-0.130, 0.071, length.out = 16),
                      colorkey = TRUE, 
                      sp.layout = list(list(biomes, fill = "gray90")), 
                      col.regions = cols_resout, 

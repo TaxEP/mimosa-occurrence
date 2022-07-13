@@ -22,14 +22,14 @@ setwd("G:/.shortcut-targets-by-id/19Bt9xRgbQsy9ySW31FgR7E5aEscE0jKG/Mimosa_occur
 #======#
 
 # Reading tree
-mimosa_tree <- read.nexus("trees/mimosa-pruned_tree.nex")
+mimosa_tree <- read.nexus("trees/mimosa-pruned_tree2.nex")
 
 #==========#
 # Matrix #
 #==========#
 
 # Loading matrix
-mimosa_matrix <- read.csv(file = "datasets/mimosa_matrix.csv", row.names = 1)
+mimosa_matrix <- read.csv(file = "datasets/mimosa_matrix2.csv", row.names = 1)
 
 # Removing taxa that only have one recorded presence
 mimosa_matrix <- mimosa_matrix[ , which(colSums(mimosa_matrix) > 1)]
