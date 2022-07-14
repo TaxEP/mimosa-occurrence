@@ -122,7 +122,7 @@ text(hc$height,
 #====================#
 
 # Number of clusters
-ncluster <- 8
+ncluster <- 10
 dend <- as.dendrogram(hc) 
 
 # Defining colors
