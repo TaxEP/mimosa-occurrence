@@ -107,6 +107,12 @@ pe_poly$significance <- factor(pe_poly$significance, levels = c("<= 0.01",
                                                                 ">= 0.975",
                                                                 ">= 0.99"))
 
+pe_plot <- spplot(pe_poly, zcol = "pe", colorkey = TRUE, 
+                  sp.layout = list(list(biomes, fill = "gray90")), 
+                  xlim = c(-73.99, -28.99), ylim = c(-33.72, 5.27),
+                  col.regions =  makeTransparent(rev(magma(16)), alpha = 0.85),
+                  scales = list(draw = FALSE))
+
 #=====================================================================================================#
 
 #=========================#
