@@ -107,11 +107,27 @@ pe_poly$significance <- factor(pe_poly$significance, levels = c("<= 0.01",
                                                                 ">= 0.975",
                                                                 ">= 0.99"))
 
+# Plotting 
+
+# PE
 pe_plot <- spplot(pe_poly, zcol = "pe", colorkey = TRUE, 
                   sp.layout = list(list(biomes, fill = "gray90")), 
                   xlim = c(-73.99, -28.99), ylim = c(-33.72, 5.27),
                   col.regions =  makeTransparent(rev(magma(16)), alpha = 0.85),
                   scales = list(draw = FALSE))
+
+# p-values
+peP_plot <- spplot(pe_poly,  
+                   zcol = "significance", 
+                   xlim = c(-73.99045 , -28.99045), ylim = c(-33.72816 , 5.271841),
+                   colorkey = TRUE, 
+                   sp.layout = list(list(biomes, fill = "gray90")), 
+                   col.regions = c("firebrick4",
+                                   "firebrick3",
+                                   makeTransparent("khaki1", alpha = 0.5),
+                                   "purple3",
+                                   "purple4"), 
+                   scales = list(draw = FALSE))
 
 #=====================================================================================================#
 
@@ -174,6 +190,51 @@ p.val.all <- apply(cbind(rpe$rpe, null.output), MARGIN = 1, rank)[1, ] / 1000
 rpe$p.rpe <- p.val.all
 rpe$ses.rpe <- ses.all
 
+# Significance
+rpe_poly <- merge(grids_br, rpe, by.x = "id")
+rpe_poly$significance <- NA
+for(i in 1:nrow(rpe_poly@data)){
+  if(is.na(rpe_poly$p.rpe[i])){
+    rpe_poly$significance[i] <- NA
+  } else if(rpe_poly$p.rpe[i] >= 0.99 ){
+    rpe_poly$significance[i] <-  ">= 0.99"
+  } else if(rpe_poly$p.rpe[i] >= 0.975 & rpe_poly$p.rpe[i] < 0.99){
+    rpe_poly$significance[i] <-  ">= 0.975"
+  } else if(rpe_poly$p.rpe[i] <= 0.025 & rpe_poly$p.rpe[i] > 0.01){
+    rpe_poly$significance[i] <-  "<= 0.025"
+  } else if(rpe_poly$p.rpe[i] <= 0.01){
+    rpe_poly$significance[i] <-  "<= 0.01"
+  } else {
+    rpe_poly$significance[i] <- "Not significant"
+  }
+}
+rpe_poly$significance <- factor(rpe_poly$significance, levels = c("<= 0.01", 
+                                                                "<= 0.025",
+                                                                "Not significant",
+                                                                ">= 0.975",
+                                                                ">= 0.99"))
+
+# Plotting
+
+# RPE
+rpe_plot <- spplot(rpe_poly, zcol = "rpe", colorkey = TRUE, 
+                  sp.layout = list(list(biomes, fill = "gray90")), 
+                  xlim = c(-73.99, -28.99), ylim = c(-33.72, 5.27),
+                  col.regions =  makeTransparent(rev(magma(16)), alpha = 0.85),
+                  scales = list(draw = FALSE))
+
+rpeP_plot <- spplot(rpe_poly,  
+                   zcol = "significance", 
+                   xlim = c(-73.99045 , -28.99045), ylim = c(-33.72816 , 5.271841),
+                   colorkey = TRUE, 
+                   sp.layout = list(list(biomes, fill = "gray90")), 
+                   col.regions = c("firebrick4",
+                                   "firebrick3",
+                                   makeTransparent("khaki1", alpha = 0.5),
+                                   "purple3",
+                                   "purple4"), 
+                   scales = list(draw = FALSE))
+
 #=====================================================================================================#
 
 #========#
@@ -206,7 +267,7 @@ for(i in 1:nrow(canape)){
   }
 }  
 
-#Plotting
+# Plotting
 canape_poly <- merge(grids_br, canape[ , which(colnames(canape) %in% c("id", "results"))], by.x = "id")
 canape_poly$results <- factor(canape_poly$results, levels = c("Neo-endemism",
                                                               "Paleo-endemism",
@@ -225,6 +286,47 @@ extent(canape_poly)
 
 # CANAPE
 canape_plot <- spplot(canape_poly, zcol = "results", colorkey = TRUE, 
+                      sp.layout = list(list(biomes, fill = "gray90")), 
+                      xlim = c(-73.99, -28.99), ylim = c(-33.72, 5.27),
+                      col.regions =  c("#231151FF",
+                                       "#B63679FF",
+                                       makeTransparent("khaki1", alpha = 0.5),
+                                       "#4AC16DFF",
+                                       "#CFE11CFF"), scales = list(draw = FALSE))
+
+#=====================================================================================================#
+
+# Running CANAPE with another code (update R version if needed)
+
+# install.packages("remotes")
+remotes::install_github("joelnitta/canaper")
+library(canaper)
+
+# Preparing matrix and tree for the analysis
+phylocom <- list(comm = mimosa_matrix, phy = mimosa_tree)
+
+# Running a series of analyses that are necessary for CANAPE
+set.seed(071421)
+rand_test_results <- cpr_rand_test(phylocom$comm, phylocom$phy, null_model = "swap", n_iterations = 1000)
+
+# Running CANAPE
+canape <- cpr_classify_endem(rand_test_results)
+
+# Assigning IDs
+canape$id <- row.names(canape)
+
+# Merging the results with the spatial polygons
+canape_poly <- merge(grids_br, canape[ , which(colnames(canape) %in% c("id", "endem_type"))], by.x = "id")
+
+# Ordering levels
+canape_poly$endem_type <- factor(canape_poly$endem_type, levels = c("neo",
+                                                              "paleo",
+                                                              "not significant",
+                                                              "mixed",
+                                                              "super"))
+
+# Plotting
+canape_plot <- spplot(canape_poly, zcol = "endem_type", colorkey = TRUE, 
                       sp.layout = list(list(biomes, fill = "gray90")), 
                       xlim = c(-73.99, -28.99), ylim = c(-33.72, 5.27),
                       col.regions =  c("#231151FF",
