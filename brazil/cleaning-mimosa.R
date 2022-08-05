@@ -1010,27 +1010,20 @@ mimosa_coordFlagged <- mimosa %>% clean_coordinates(lon = "longitude",
 invalid_coords <- mimosa[mimosa_coordFlagged == FALSE, ] # subsetting flagged records
 mimosa_coordClean <- mimosa[mimosa_coordFlagged  == TRUE, ] # subsetting valid records
 
-# Writing *.csv for subsequent analyses 
-write.csv(mimosa_coordClean, file = "datasets/mimosa-clean.csv", row.names = F,
-          fileEncoding = "UTF-8")
-
 #======================================================================================#
 
 #============================#
 # PREPARING FOR THE ANALYSES #
 #============================#
 
-# Reading the dataset
-mimosa_clean <- read.csv(file = "datasets/mimosa-clean.csv", na.strings = c("", NA),
-                         encoding = "UTF-8")
-
 # Reading the shapefile of the Brazilian terrestrial territory
 br <- readOGR("shapefiles/BR/BR_UF_2020.shp")
-grids_br <- readOGR("shapefiles/grids_br/grids_br.shp") 
+grids_br <- readOGR("shapefiles/grids_br/hc_grids.shp") 
 
 # Projecting
 crswgs84 <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs") # EPSG:4326 - WGS 84
 br <- spTransform(br, crswgs84)
+grids_br <- spTransform(grids_br, crswgs84)
 
 # Intersecting coordinates with the grid cells
 coords <- mimosa_clean
@@ -1043,5 +1036,5 @@ coordinates(mimosa_clean) <- ~ longitude + latitude
 proj4string(mimosa_clean) <- crswgs84
 
 # Writing *.csv for subsequent analyses 
-write.csv(mimosa_clean, file = "datasets/mimosa-clean.csv", row.names = F,
+write.csv(mimosa_clean, file = "datasets/mimosa-clean_hc.csv", row.names = F,
           fileEncoding = "UTF-8")

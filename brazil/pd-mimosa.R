@@ -40,13 +40,13 @@ setwd("G:/.shortcut-targets-by-id/19Bt9xRgbQsy9ySW31FgR7E5aEscE0jKG/Mimosa_occur
 #=======#
 
 # Reading presence-absence matrix
-mimosa_matrix <- read.csv(file = "datasets/mimosa_matrix.csv", row.names = 1)
+mimosa_matrix <- read.csv(file = "datasets/mimosa_matrix-hc.csv", row.names = 1)
 
 # Reading tree
-mimosa_tree <- read.nexus("trees/mimosa-pruned_tree.nex")
+mimosa_tree <- read.nexus("trees/mimosa-pruned_tree_hc.nex")
 
 # Reading grid cells
-grids_br <- readOGR("shapefiles/grids_br/grids_br.shp") 
+grids_br <- readOGR("shapefiles/grids_br/hc_grids.shp") 
 
 # Reading shapefile: Brazilian terrestrial territory
 br <- readOGR("shapefiles/BR/BR_UF_2020.shp")
@@ -74,7 +74,7 @@ pd_stats$id <- rownames(pd_stats)
 pd_stats$residuals <- lm(pd.obs ~ ntaxa, pd_stats)$res
 
 # Saving results as *.csv
-write.csv(pd_stats, "datasets/mimosa_pd.csv", row.names = TRUE)
+write.csv(pd_stats, "datasets/mimosa_pd-hc.csv", row.names = TRUE)
 
 # Loading results
 pd_stats <- read.csv("datasets/mimosa_pd.csv", row.names = 1)

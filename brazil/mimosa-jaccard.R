@@ -22,14 +22,14 @@ setwd("G:/.shortcut-targets-by-id/19Bt9xRgbQsy9ySW31FgR7E5aEscE0jKG/Mimosa_occur
 #======#
 
 # Reading tree
-mimosa_tree <- read.nexus("trees/mimosa-pruned_tree.nex")
+mimosa_tree <- read.nexus("trees/mimosa-pruned_tree_hc.nex")
 
 #==========#
 # Matrix #
 #==========#
 
 # Loading matrix
-mimosa_matrix <- read.csv(file = "datasets/mimosa_matrix.csv", row.names = 1)
+mimosa_matrix <- read.csv(file = "datasets/mimosa_matrix-hc.csv", row.names = 1)
 
 # Removing taxa that only have one recorded presence
 mimosa_matrix <- mimosa_matrix[ , which(colSums(mimosa_matrix) > 1)]
@@ -45,7 +45,7 @@ mimosa_matrix <- mimosa_matrix[which(rowSums(mimosa_matrix) > 0), ]
 #============#
 
 #Loading grids and, the Brazilian terrestrial territory and the biomes
-grids_br <- readOGR("shapefiles/grids_br/grids_br.shp") 
+grids_br <- readOGR("shapefiles/grids_br/hc_grids.shp") 
 br <- readOGR("shapefiles/BR/BR_UF_2020.shp")
 biomes <- readOGR("shapefiles/biomes/bioma_1milhao_uf2015_250mil_IBGE_albers_v4_revisao_pampa_lagoas.shp")
 
@@ -53,6 +53,7 @@ biomes <- readOGR("shapefiles/biomes/bioma_1milhao_uf2015_250mil_IBGE_albers_v4_
 crswgs84 <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
 br <- spTransform(br, crswgs84)
 biomes <- spTransform(biomes, crswgs84)
+grids_br <- spTransform(grids_br, crswgs84)
 
 #=======#
 # Grids #
