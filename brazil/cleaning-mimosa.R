@@ -1011,7 +1011,7 @@ invalid_coords <- mimosa[mimosa_coordFlagged == FALSE, ] # subsetting flagged re
 mimosa_coordClean <- mimosa[mimosa_coordFlagged  == TRUE, ] # subsetting valid records
 
 # Writing *.csv for subsequent analyses 
-write.csv(mimosa_coordClean, file = "datasets/mimosa-clean.csv", row.names = F,
+write.csv(mimosa_coordClean, file = "datasets/mimosa-pre_grid.csv", row.names = F,
           fileEncoding = "UTF-8")
 
 #======================================================================================#

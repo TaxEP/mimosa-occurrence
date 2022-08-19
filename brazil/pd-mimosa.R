@@ -111,6 +111,10 @@ pd_poly$significance <- factor(pd_poly$significance, levels = c("<= 0.01",
 # FIGURES #
 #=========#
 
+# Scaling PD and species richness
+pd_poly$pd.obs <- pd_poly$pd.obs/max(pd_poly$pd.obs, na.rm = T)
+pd_poly$ntaxa<- pd_poly$ntaxa/max(pd_poly$ntaxa, na.rm = T)
+
 # We can define label limits using the range of each attribute
 summary(pd_poly@data)
 
@@ -128,12 +132,34 @@ pd_plot <- spplot(pd_poly,
                   col.regions = makeTransparent(rev(magma(16)), alpha = 0.85), 
                   scales = list(draw = FALSE))
 
+# Phylogenetic diversty (scaled)
+pd_plot.scaled <- spplot(pd_poly,
+                  zcol = "pd.obs",
+                  xlim = c(-73.99045 , -28.99045), ylim = c(-33.72816 , 5.271841),
+                  par.settings = list(fontsize = list(text = 21)),
+                  at = seq(0, 1.000000001, length.out = 16),
+                  colorkey = TRUE, 
+                  sp.layout = list(biomes, fill = "gray90", lwd = 2), 
+                  col.regions = makeTransparent(rev(magma(16)), alpha = 0.85), 
+                  scales = list(draw = FALSE))
+
 # Species richness
 sr_plot <- spplot(pd_poly,
                   zcol = "ntaxa", 
                   xlim = c(-73.99045 , -28.99045), ylim = c(-33.72816 , 5.271841),
                   par.settings = list(fontsize = list(text = 21)),
                   at = seq(0, 55, length.out = 16),
+                  colorkey = TRUE, 
+                  sp.layout = list(list(biomes, fill = "gray90", lwd = 2)), 
+                  col.regions = makeTransparent(rev(magma(16)), alpha = 0.85), 
+                  scales = list(draw = FALSE))
+
+# Species richness (scaled)
+sr_plot.scaled <- spplot(pd_poly,
+                  zcol = "ntaxa", 
+                  xlim = c(-73.99045 , -28.99045), ylim = c(-33.72816 , 5.271841),
+                  par.settings = list(fontsize = list(text = 21)),
+                  at = seq(0, 1.000000001, length.out = 16),
                   colorkey = TRUE, 
                   sp.layout = list(list(biomes, fill = "gray90", lwd = 2)), 
                   col.regions = makeTransparent(rev(magma(16)), alpha = 0.85), 
