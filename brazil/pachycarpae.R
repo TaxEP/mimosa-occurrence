@@ -37,37 +37,33 @@ pachy <- pachy[pachy$gen_sp %in% list_pachy, ]
 # Reading shapefile: biomes
 biomes <- readOGR("shapefiles/biomes/bioma_1milhao_uf2015_250mil_IBGE_albers_v4_revisao_pampa_lagoas.shp")
 
+# Reading grid cells
+grids_br <- readOGR("shapefiles/grids_br/grids_br.shp") 
+
+# Defining projection
 crswgs84 <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs") # EPSG:4326 - WGS 84
 
-
+# Projecting the coordinates
 coords <- pachy
 coordinates(coords) <- ~ longitude + latitude
 proj4string(coords) <- crswgs84
 
+# Records' map
 plot(biomes)
 points(coords, col = makeTransparent("blue", alpha = 0.5), lwd = 3, cex = 0.5)
 
-#Loading an elevation raster 
+# Loading an elevation raster 
 alt <- raster('HYP_HR_SR/HYP_HR_SR.tif')
 e <- as(extent(biomes), 'SpatialPolygons')
 crs(e) <- crswgs84
 r <- crop(alt, e)
 rr <- mask(r, biomes)
 
-plot(rr)
-
+# Plotting the elevation map (this needs improvement) 
 alt_plot  <- spplot(rr, col.regions = grey(1:100/100, alpha = 0.7), 
                     maxpixels = 2e10, colorkey = FALSE)
-
 alt_plot + layer(panel.points(longitude, latitude, col="green", pch=19), data=coords@coords)
 
-
-#=====================================================================================================#
-
-# Reading grid cells
-grids_br <- readOGR("shapefiles/grids_br/grids_br.shp") 
-
-# Matrix
 # Creating a presence/absence matrix
 pachy_matrix <- matrix(data = NA, nrow = length(unique(pachy$id_grid)), 
                         ncol = length(unique(pachy$gen_sp)))
@@ -83,15 +79,15 @@ for(i in 1:nrow(pachy_matrix)){
     }
   }
 }
-
 pachy_df <- data.frame("id" = rownames(pachy_matrix), "sr" = rowSums(pachy_matrix))
 
 # Assigning results for each grid cell by merging results and a spatial polygon
 sr_poly <- merge(grids_br, pachy_df, by.x = "id")
 
+# Getting species richness range
 summary(sr_poly@data)
 
-# Species richness
+# Plotting species richness
 sr_plot <- spplot(sr_poly,
                   zcol = "sr", 
                   xlim = c(-73.99045 , -28.99045), ylim = c(-33.72816 , 5.271841),
